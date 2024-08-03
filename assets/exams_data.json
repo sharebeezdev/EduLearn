@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "subject": "Mathematics",
+    "examDate": "2024-03-15",
+    "marks": 85
+  },
+  {
+    "id": 2,
+    "subject": "Science",
+    "examDate": "2024-06-10",
+    "marks": 78
+  },
+  {
+    "id": 3,
+    "subject": "English",
+    "examDate": "2024-05-20",
+    "marks": 90
+  },
+  {
+    "id": 4,
+    "subject": "History",
+    "examDate": "2024-01-25",
+    "marks": 88
+  }
+]

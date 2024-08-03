@@ -18,9 +18,19 @@ class DBHelper {
     debugPrint('Initializing database at path: $path');
     return await openDatabase(
       path,
-      version: 1,
+      version: 3, // Incremented version for new schema
       onCreate: (db, version) async {
         await _createDB(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 3) {
+          await db.execute('''CREATE TABLE historical_exams (
+            id INTEGER PRIMARY KEY,
+            subject TEXT,
+            marks INTEGER,
+            date TEXT
+          )''');
+        }
       },
       onOpen: (db) async {
         await _loadInitialDataIfNotExists(db);
@@ -31,31 +41,63 @@ class DBHelper {
   Future<void> _createDB(Database db) async {
     debugPrint('Creating database tables...');
     await db.execute('''CREATE TABLE quizzes (
-      id INTEGER PRIMARY KEY,
-      title TEXT,
-      description TEXT,
-      imageUrl TEXT
-    )''');
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    description TEXT,
+    imageUrl TEXT
+  )''');
 
     await db.execute('''CREATE TABLE ideas (
-      id INTEGER PRIMARY KEY,
-      title TEXT,
-      description TEXT
-    )''');
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    description TEXT
+  )''');
 
     await db.execute('''CREATE TABLE topics (
-      id INTEGER PRIMARY KEY,
-      title TEXT,
-      description TEXT
-    )''');
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    description TEXT
+  )''');
+
+    await db.execute('''CREATE TABLE subjects (
+    id INTEGER PRIMARY KEY,
+    name TEXT
+  )''');
+
+    await db.execute('''CREATE TABLE topics_of_interest (
+    id INTEGER PRIMARY KEY,
+    name TEXT
+  )''');
+
+    await db.execute('''CREATE TABLE historical_exams (
+    id INTEGER PRIMARY KEY,
+    examName TEXT,  -- Added this column
+    examDate TEXT,  -- Changed from 'date'
+    subject TEXT,
+    marks INTEGER,
+    totalMarks INTEGER  -- Added this column
+  )''');
 
     // Add a table to track if initial data is loaded
     await db.execute('''CREATE TABLE metadata (
-      key TEXT PRIMARY KEY,
-      value TEXT
-    )''');
+    key TEXT PRIMARY KEY,
+    value TEXT
+  )''');
 
     debugPrint('Database tables created successfully.');
+  }
+
+  Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 3) {
+      await db.execute('''CREATE TABLE historical_exams (
+      id INTEGER PRIMARY KEY,
+      examName TEXT,
+      examDate TEXT,
+      subject TEXT,
+      marks INTEGER,
+      totalMarks INTEGER
+    )''');
+    }
   }
 
   Future<void> _loadInitialDataIfNotExists(Database db) async {

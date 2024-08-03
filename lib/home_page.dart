@@ -3,15 +3,35 @@ import 'package:provider/provider.dart';
 import 'providers/quiz_provider.dart';
 import 'providers/idea_provider.dart';
 import 'providers/topic_provider.dart';
+import 'profile_setup_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfileSetupPage()),
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final quizProvider = Provider.of<QuizProvider>(context);
     final ideaProvider = Provider.of<IdeaProvider>(context);
     final topicProvider = Provider.of<TopicProvider>(context);
 
-    // Fetch data when the widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (quizProvider.quizzes.isEmpty) quizProvider.loadQuizzes();
       if (ideaProvider.ideas.isEmpty) ideaProvider.fetchIdeas();
@@ -41,7 +61,7 @@ class HomePage extends StatelessWidget {
         ),
         backgroundColor: Colors.deepPurple,
         elevation: 0,
-        toolbarHeight: 80, // Adjust height to fit content
+        toolbarHeight: 80,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -57,7 +77,7 @@ class HomePage extends StatelessWidget {
               quizProvider.quizzes.isEmpty
                   ? Center(child: CircularProgressIndicator())
                   : Container(
-                      height: 200, // Adjusted height to accommodate text
+                      height: 200,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: quizProvider.quizzes.length,
@@ -66,7 +86,7 @@ class HomePage extends StatelessWidget {
                           return Card(
                             margin: EdgeInsets.only(right: 16),
                             child: Container(
-                              width: 200, // Fixed width for the card
+                              width: 200,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -96,10 +116,12 @@ class HomePage extends StatelessWidget {
                                           quiz.description,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText2,
+                                              .bodyText2
+                                              ?.copyWith(
+                                                color: Colors.black87,
+                                              ),
                                           overflow: TextOverflow.clip,
                                           maxLines: 2,
-                                          // Removed overflow and maxLines to allow wrapping
                                         ),
                                       ],
                                     ),
@@ -166,12 +188,31 @@ class HomePage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.deepPurple,
+        unselectedItemColor: Colors.purple,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.help), label: 'Help'),
-          BottomNavigationBarItem(icon: Icon(Icons.lightbulb), label: 'Ideas'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Settings'),
+              icon: Icon(
+                Icons.home,
+              ),
+              label: 'Home'),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.help,
+              ),
+              label: 'Help'),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.lightbulb,
+              ),
+              label: 'Ideas'),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.settings,
+              ),
+              label: 'Settings'),
         ],
       ),
     );
