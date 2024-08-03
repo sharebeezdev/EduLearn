@@ -1,0 +1,73 @@
+{
+    "quizzes": [
+      {
+        "id": 1,
+        "title": "Google Cloud",
+        "description": "Quiz about Google Cloud services and features.",
+        "imageUrl": "https://www.freecodecamp.org/news/content/images/size/w2000/2020/10/gcp.png"
+      },
+      {
+        "id": 2,
+        "title": "Gemini Studio",
+        "description": "Quiz about Gemini Studio functionalities and usage.",
+        "imageUrl": "https://www.freecodecamp.org/news/content/images/size/w2000/2020/10/gcp.png"
+      },
+      {
+        "id": 3,
+        "title": "Gemini AI",
+        "description": "Quiz about Gemini AI capabilities and applications.",
+        "imageUrl": "https://www.freecodecamp.org/news/content/images/size/w2000/2020/10/gcp.png"
+      },
+      {
+        "id": 4,
+        "title": "Flutter",
+        "description": "Quiz about Flutter framework and development.",
+        "imageUrl": "https://www.freecodecamp.org/news/content/images/size/w2000/2020/10/gcp.png"
+      }
+    ],
+    "ideas": [
+      {
+        "id": 1,
+        "title": "Google Cloud Innovations",
+        "description": "Latest innovations and updates in Google Cloud services."
+      },
+      {
+        "id": 2,
+        "title": "Exploring Gemini Studio",
+        "description": "An in-depth look into the features and functionalities of Gemini Studio."
+      },
+      {
+        "id": 3,
+        "title": "Advancements in Gemini AI",
+        "description": "Recent advancements and use cases of Gemini AI."
+      },
+      {
+        "id": 4,
+        "title": "Flutter Development Tips",
+        "description": "Tips and tricks for effective Flutter development."
+      }
+    ],
+    "topics": [
+      {
+        "id": 1,
+        "title": "Getting Started with Google Cloud",
+        "description": "Beginner's guide to using Google Cloud services."
+      },
+      {
+        "id": 2,
+        "title": "Mastering Gemini Studio",
+        "description": "Advanced techniques and best practices for Gemini Studio."
+      },
+      {
+        "id": 3,
+        "title": "Harnessing the Power of Gemini AI",
+        "description": "How to effectively leverage Gemini AI for various applications."
+      },
+      {
+        "id": 4,
+        "title": "Building Apps with Flutter",
+        "description": "Comprehensive guide to developing mobile apps using Flutter."
+      }
+    ]
+  }
+  
