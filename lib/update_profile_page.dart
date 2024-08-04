@@ -94,8 +94,26 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       await db.insert('topics_of_interest', {'name': topic});
     }
 
+    final topicsString = _topics.join(', ');
+    final subjectsString = _subjects.join(', ');
+
+    final topics = await MyService.fetchTrendingTopics(
+      topics: topicsString,
+      subjects: subjectsString,
+    );
+
+    // Clear existing trending topics
+    await DBHelper().clearTrendingTopics();
+
+    // Insert new trending topics
+    for (final topic in topics) {
+      await DBHelper().addTrendingTopic(topic);
+    }
+
+    await DBHelper().fetchAndSaveQuizzes();
+
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Data saved successfully!')),
+      const SnackBar(content: Text('Data saved successfully!')),
     );
 
     Navigator.pop(context);
@@ -181,10 +199,11 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
               future: _fetchHistoricalData(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No historical data available.'));
+                  return const Center(
+                      child: Text('No historical data available.'));
                 }
                 final examDataList = snapshot.data!;
                 return ExamDataChart(examDataList: examDataList);

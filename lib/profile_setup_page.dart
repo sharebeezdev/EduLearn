@@ -35,6 +35,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
 
     // Load subjects
     final subjectResult = await db.query('subjects');
+    print('Loaded subjects: $subjectResult');
     setState(() {
       _savedSubjects = subjectResult.map((e) => e['name'] as String).toList();
       _isLoadingSubjects = false;
@@ -42,13 +43,34 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
 
     // Load topics
     final topicResult = await db.query('topics_of_interest');
+    print('Loaded topics: $topicResult');
     setState(() {
       _savedTopics = topicResult.map((e) => e['name'] as String).toList();
       _isLoadingTopics = false;
     });
 
-    // Load trending topics
-    await _loadTrendingTopics();
+    // Load trending topics from database
+    await _loadTrendingTopicsFromDB();
+  }
+
+  Future<void> _loadTrendingTopicsFromDB() async {
+    try {
+      final db = await DBHelper().database;
+
+      final trendingResult = await db.query('trending_topics');
+      print('Loaded trending topics from DB: $trendingResult');
+
+      setState(() {
+        _trendingTopics =
+            trendingResult.map((e) => e['topic'] as String).toList();
+        _isLoadingTrending = false;
+      });
+    } catch (error) {
+      print('Error loading trending topics from DB: $error');
+      setState(() {
+        _isLoadingTrending = false;
+      });
+    }
   }
 
   Future<void> _loadTrendingTopics() async {
@@ -56,16 +78,30 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       final topicsString = _savedTopics.join(', ');
       final subjectsString = _savedSubjects.join(', ');
 
+      print('Fetching trending topics with: $topicsString and $subjectsString');
+
       final topics = await MyService.fetchTrendingTopics(
         topics: topicsString,
         subjects: subjectsString,
       );
 
-      setState(() {
-        _trendingTopics = topics;
-        _isLoadingTrending = false;
-      });
+      print('Fetched trending topics: $topics');
+
+      final dbHelper = DBHelper();
+      final db = await dbHelper.database;
+
+      // Clear existing trending topics
+      await dbHelper.clearTrendingTopics();
+
+      // Insert new trending topics
+      for (final topic in topics) {
+        await dbHelper.addTrendingTopic(topic);
+      }
+
+      // Reload trending topics from database
+      await _loadTrendingTopicsFromDB();
     } catch (error) {
+      print('Error fetching or saving trending topics: $error');
       setState(() {
         _isLoadingTrending = false;
       });
@@ -117,6 +153,8 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     setState(() {
       _selectedTrendingTopics.clear();
     });
+
+    await DBHelper().fetchAndSaveQuizzes();
   }
 
   Future<void> _unfollowSelectedTopics() async {
@@ -150,6 +188,8 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     setState(() {
       _selectedSavedSubjects.clear();
     });
+
+    await DBHelper().fetchAndSaveQuizzes();
   }
 
   @override

@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
+
+import 'db_helper.dart';
 
 class MyService {
   static Future<List<String>> fetchTrendingTopics({

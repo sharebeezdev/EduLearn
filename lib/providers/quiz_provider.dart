@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import '../databaseutils/db_helper.dart';
 import '../models/quiz.dart';
+
 class QuizProvider with ChangeNotifier {
   List<Quiz> _quizzes = [];
   List<Quiz> get quizzes => _quizzes;
@@ -17,11 +18,11 @@ class QuizProvider with ChangeNotifier {
       final List<Map<String, dynamic>> maps = await db.query('quizzes');
       _quizzes = List.generate(maps.length, (i) {
         return Quiz(
-          id: maps[i]['id'],
-          title: maps[i]['title'],
-          description: maps[i]['description'],
-          imageUrl: maps[i]['imageUrl'],
-        );
+            id: maps[i]['id'],
+            title: maps[i]['title'],
+            description: maps[i]['description'],
+            imageUrl: maps[i]['imageUrl'],
+            type: '');
       });
       debugPrint('Quizzes loaded: $_quizzes');
       notifyListeners();

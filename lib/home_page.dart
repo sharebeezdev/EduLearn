@@ -4,6 +4,8 @@ import 'providers/quiz_provider.dart';
 import 'providers/idea_provider.dart';
 import 'providers/topic_provider.dart';
 import 'profile_setup_page.dart';
+import 'quiz_suggestion_page.dart';
+import 'widgets/quiz_card.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -83,56 +85,12 @@ class _HomePageState extends State<HomePage> {
                         itemCount: quizProvider.quizzes.length,
                         itemBuilder: (context, index) {
                           final quiz = quizProvider.quizzes[index];
-                          return Card(
-                            margin: EdgeInsets.only(right: 16),
-                            child: Container(
-                              width: 200,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.network(
-                                    quiz.imageUrl,
-                                    width: 150,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          quiz.title,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          quiz.description,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2
-                                              ?.copyWith(
-                                                color: Colors.black87,
-                                              ),
-                                          overflow: TextOverflow.clip,
-                                          maxLines: 2,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
+                          return QuizCard(quiz: quiz);
                         },
                       ),
                     ),
+              SizedBox(height: 16),
+              QuizSuggestionsWidget(), // Add the new quiz suggestions widget here
               SizedBox(height: 16),
               Text(
                 'Ideas & Suggestions',
