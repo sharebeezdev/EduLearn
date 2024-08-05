@@ -24,15 +24,13 @@ class _QuizSuggestionsWidgetState extends State<QuizSuggestionsWidget> {
   Future<void> loadQuizzes() async {
     final db = await DBHelper().database;
 
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/your_database_name.db';
-    print('Database path: $path');
-
     // Fetch quizzes from QuizOverviews table based on type
     final List<Map<String, dynamic>> topics = await db
         .query('QuizOverviews', where: 'quizType = ?', whereArgs: ['topics']);
+    print('topics quizes are ' + topics.length.toString());
     final List<Map<String, dynamic>> subjects = await db
         .query('QuizOverviews', where: 'quizType = ?', whereArgs: ['subjects']);
+    print('subjects quizes are ' + topics.length.toString());
     final List<Map<String, dynamic>> historicalData = await db.query(
         'QuizOverviews',
         where: 'quizType = ?',

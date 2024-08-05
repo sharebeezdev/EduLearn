@@ -1,3 +1,4 @@
+import 'package:edu_learn/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/quiz_provider.dart';
@@ -41,29 +42,9 @@ class _HomePageState extends State<HomePage> {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'EduLearn',
-              style: Theme.of(context).textTheme.headline6?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              'Powered by Gemini AI',
-              style: Theme.of(context).textTheme.caption?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: Colors.white60,
-                  ),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.deepPurple,
-        elevation: 0,
-        toolbarHeight: 80,
+      appBar: CustomAppBar(
+        title: 'EduLearn',
+        isBackButtonVisible: false,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -75,10 +56,10 @@ class _HomePageState extends State<HomePage> {
                 'Featured Quizzes',
                 style: Theme.of(context).textTheme.headline6,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               quizProvider.quizzes.isEmpty
-                  ? Center(child: CircularProgressIndicator())
-                  : Container(
+                  ? const Center(child: CircularProgressIndicator())
+                  : SizedBox(
                       height: 200,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
@@ -89,24 +70,24 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               QuizSuggestionsWidget(), // Add the new quiz suggestions widget here
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Ideas & Suggestions',
                 style: Theme.of(context).textTheme.headline6,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               ideaProvider.ideas.isEmpty
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: ideaProvider.ideas.length,
                       itemBuilder: (context, index) {
                         final idea = ideaProvider.ideas[index];
                         return Card(
-                          margin: EdgeInsets.only(bottom: 8),
+                          margin: const EdgeInsets.only(bottom: 8),
                           child: ListTile(
                             title: Text(idea.title),
                             subtitle: Text(idea.description),
@@ -114,22 +95,22 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                     ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Topics to Explore',
                 style: Theme.of(context).textTheme.headline6,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               topicProvider.topics.isEmpty
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: topicProvider.topics.length,
                       itemBuilder: (context, index) {
                         final topic = topicProvider.topics[index];
                         return Card(
-                          margin: EdgeInsets.only(bottom: 8),
+                          margin: const EdgeInsets.only(bottom: 8),
                           child: ListTile(
                             title: Text(topic.title),
                             subtitle: Text(

@@ -1,6 +1,7 @@
 import 'package:edu_learn/databaseutils/db_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'databaseutils/db_utils.dart';
 import 'models/quiz_question.dart';
 import 'score_feedback_page.dart';
 
@@ -29,7 +30,7 @@ class _QuizDetailsState extends State<QuizDetails> {
   void initState() {
     super.initState();
     _questionsFuture =
-        DBHelper().fetchQuizQuestions(widget.quizId, widget.quizType);
+        DBUtils().fetchQuizQuestions(widget.quizId, widget.quizType);
   }
 
   void _nextQuestion() {
@@ -58,7 +59,7 @@ class _QuizDetailsState extends State<QuizDetails> {
     double score = (correctAnswers / _questions.length) * 100;
 
     // Insert the score into the database
-    await DBHelper().insertQuizScoreDetails(score, widget.quizId);
+    await DBUtils().insertQuizScoreDetails(score, widget.quizId);
 
     // Navigate to the score feedback page
     Navigator.of(context).push(MaterialPageRoute(

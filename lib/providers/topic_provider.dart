@@ -16,7 +16,8 @@ class TopicProvider with ChangeNotifier {
           .map((e) => Topic(
                 id: e['id'] as int,
                 title: e['title'] as String,
-                description: e['description'] as String,
+                description: e['description'] as String? ??
+                    e['title'] as String, // Use title if description is null
               ))
           .toList();
       debugPrint('Topics loaded: $_topics');

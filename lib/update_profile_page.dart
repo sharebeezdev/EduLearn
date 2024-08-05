@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import for loading assets
 import 'package:sqflite/sqflite.dart';
 import 'databaseutils/db_helper.dart';
+import 'databaseutils/db_utils.dart';
 import 'models/exam_data.dart';
 import 'databaseutils/service_helper.dart';
 import 'widgets/exam_data_chart.dart';
@@ -110,7 +111,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       await DBHelper().addTrendingTopic(topic);
     }
 
-    await DBHelper().fetchAndSaveQuizzes();
+    await DBUtils().fetchAndSaveQuizzes();
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Data saved successfully!')),

@@ -1,6 +1,7 @@
+import 'package:edu_learn/databaseutils/db_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'databaseutils/db_helper.dart';
+import 'initial_survey.dart';
 import 'providers/quiz_provider.dart';
 import 'providers/idea_provider.dart';
 import 'providers/topic_provider.dart';
@@ -8,14 +9,18 @@ import 'home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final dbHelper = DBHelper();
-  // Ensure database is initialized, which now includes loading initial data
-  await dbHelper.database;
 
-  runApp(MyApp());
+  bool isSurveyCompleted =
+      await DBUtils().isSurveyCompleted(); // Check if survey is completed
+
+  runApp(MyApp(isSurveyCompleted: isSurveyCompleted));
 }
 
 class MyApp extends StatelessWidget {
+  final bool isSurveyCompleted;
+
+  MyApp({required this.isSurveyCompleted});
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -53,7 +58,8 @@ class MyApp extends StatelessWidget {
             showUnselectedLabels: true,
           ),
         ),
-        home: HomePage(),
+        home: isSurveyCompleted ? HomePage() : InitialSurveyScreen(),
+        debugShowCheckedModeBanner: false, // Remove debug banner
       ),
     );
   }

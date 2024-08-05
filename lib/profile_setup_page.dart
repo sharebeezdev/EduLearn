@@ -1,3 +1,4 @@
+import 'package:edu_learn/databaseutils/db_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sqflite/sqflite.dart';
@@ -42,10 +43,12 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     });
 
     // Load topics
-    final topicResult = await db.query('topics_of_interest');
+    final topicResult = await db.query('topics');
+    print('topics of interest ' + topicResult.toString());
     print('Loaded topics: $topicResult');
     setState(() {
-      _savedTopics = topicResult.map((e) => e['name'] as String).toList();
+      _savedTopics = topicResult.map((e) => e['title'] as String).toList();
+      print('topics of interest ' + topicResult.toString());
       _isLoadingTopics = false;
     });
 
@@ -57,12 +60,12 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     try {
       final db = await DBHelper().database;
 
-      final trendingResult = await db.query('trending_topics');
+      final trendingResult = await db.query('topics_of_interest');
       print('Loaded trending topics from DB: $trendingResult');
 
       setState(() {
         _trendingTopics =
-            trendingResult.map((e) => e['topic'] as String).toList();
+            trendingResult.map((e) => e['name'] as String).toList();
         _isLoadingTrending = false;
       });
     } catch (error) {
@@ -154,7 +157,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       _selectedTrendingTopics.clear();
     });
 
-    await DBHelper().fetchAndSaveQuizzes();
+    await DBUtils().fetchAndSaveQuizzes();
   }
 
   Future<void> _unfollowSelectedTopics() async {
@@ -189,7 +192,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       _selectedSavedSubjects.clear();
     });
 
-    await DBHelper().fetchAndSaveQuizzes();
+    await DBUtils().fetchAndSaveQuizzes();
   }
 
   @override
