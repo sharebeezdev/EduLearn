@@ -37,22 +37,25 @@ class DBHelper {
     debugPrint('Creating database tables...');
 
     final tables = [
-      'quizzes',
-      'ideas',
-      'topics',
-      'subjects',
-      'topics_of_interest',
-      'historical_exams',
-      'QuizOverviews',
-      'MyTopicsQuizzes',
-      'MySubjectQuizzes',
-      'MyHistoricalDataQuizzes',
-      'FeaturedQuizzes',
-      'QuizScores',
-      'metadata',
-      'trending_topics',
-      'ScoreDetails',
-      'SurveyData',
+      // 'quizzes',
+      // 'ideas',
+      // 'topics',
+      // 'subjects',
+      // 'topics_of_interest',
+      // 'historical_exams',
+      // 'QuizOverviews',
+      // 'MyTopicsQuizzes',
+      // 'MySubjectQuizzes',
+      // 'MyHistoricalDataQuizzes',
+      // 'FeaturedQuizzes',
+      // 'QuizScores',
+      // 'metadata',
+      // 'trending_topics',
+      // 'ScoreDetails',
+      // 'SurveyData',
+      // 'exam_scores', // New table
+      // 'project_grades', // New table
+      // 'teacher_feedback', // New table
     ];
 
     for (var table in tables) {
@@ -205,6 +208,29 @@ class DBHelper {
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               areaOfDifficulty TEXT,
               preferredLearningStyle TEXT
+            )''');
+            break;
+          case 'exam_scores': // New table
+            await db.execute('''CREATE TABLE exam_scores (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              subject TEXT,
+              score INTEGER,
+              date TEXT
+            )''');
+            break;
+          case 'project_grades': // New table
+            await db.execute('''CREATE TABLE project_grades (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              projectName TEXT,
+              grade TEXT,
+              date TEXT
+            )''');
+            break;
+          case 'teacher_feedback': // New table
+            await db.execute('''CREATE TABLE teacher_feedback (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              feedback TEXT,
+              date TEXT
             )''');
             break;
         }

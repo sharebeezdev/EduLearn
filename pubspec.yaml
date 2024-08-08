@@ -44,6 +44,8 @@ dependencies:
   file_picker: ^7.0.2
   cached_network_image: ^3.3.1
   url_launcher: ^6.1.14
+  auto_size_text: ^3.0.0
+  flutter_neumorphic: ^3.2.0
 
 dev_dependencies:
   flutter_test:
@@ -65,7 +67,7 @@ flutter:
     - assets/initial_data.json
     - assets/exams_data.json
     - assets/images/gcp.png
-
+    - assets/scripts/DemoData.txt
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

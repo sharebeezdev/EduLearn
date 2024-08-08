@@ -1,33 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import '../databaseutils/db_helper.dart';
 import '../models/quiz.dart';
+import 'package:edu_learn/databaseutils/dbutils_sql.dart';
 
 class QuizProvider with ChangeNotifier {
   List<Quiz> _quizzes = [];
+  String _currentQuizType = '';
+
   List<Quiz> get quizzes => _quizzes;
 
-  QuizProvider() {
-    loadQuizzes();
-  }
-
-  Future<void> loadQuizzes() async {
-    final db = await DBHelper().database;
-    debugPrint('Fetching quizzes from database...');
-    try {
-      final List<Map<String, dynamic>> maps = await db.query('quizzes');
-      _quizzes = List.generate(maps.length, (i) {
-        return Quiz(
-            id: maps[i]['id'],
-            title: maps[i]['title'],
-            description: maps[i]['description'],
-            imageUrl: maps[i]['imageUrl'],
-            type: '');
-      });
-      debugPrint('Quizzes loaded: $_quizzes');
-      notifyListeners();
-    } catch (e) {
-      debugPrint('Error loading quizzes: $e');
+  Future<void> fetchQuizzes({String quizType = ''}) async {
+    if (_currentQuizType == quizType) {
+      // Prevent fetching the same type again
+      return;
     }
+    print(
+        'Fetching quizzes from database... quizType ' + quizType); // Debug log
+    final db = await DBUtilsSQL().database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'QuizOverviews',
+      where: quizType.isNotEmpty ? 'quizType = ? AND status = ?' : 'status = ?',
+      whereArgs:
+          quizType.isNotEmpty ? [quizType, 'Not Attempted'] : ['Not Attempted'],
+      orderBy: 'creationDate',
+      limit: 5,
+    );
+    print(
+        'maps.len quizType ' + maps.length.toString()); // Check length of maps
+    _quizzes = List.generate(maps.length, (i) {
+      print('Quiz $i: ${maps[i]}'); // Debug log for each quiz
+      return Quiz(
+        id: maps[i]['quizId'],
+        title: maps[i]['quizTitle'],
+        description: maps[i]['quizDescription'],
+        imageUrl: maps[i]['imageUrl'],
+        type: maps[i]['quizType'],
+      );
+    });
+
+    _currentQuizType = quizType; // Update the current quiz type
+    print(
+        'Quizzes loaded for type $_currentQuizType: ${_quizzes.length}'); // Check loaded quizzes
+    notifyListeners();
   }
 }

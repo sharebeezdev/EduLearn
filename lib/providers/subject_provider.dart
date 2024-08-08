@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/quiz.dart';
 import '../databaseutils/dbutils_sql.dart';
 
-class TopicsProvider with ChangeNotifier {
+class SubjectsProvider with ChangeNotifier {
   List<Quiz> _quizzes = [];
 
   List<Quiz> get quizzes => _quizzes;
@@ -13,7 +13,7 @@ class TopicsProvider with ChangeNotifier {
     final List<Map<String, dynamic>> maps = await db.query(
       'QuizOverviews',
       where: 'quizType = ? AND status = ?',
-      whereArgs: ['Topics', 'Not Attempted'],
+      whereArgs: ['Subject', 'Not Attempted'],
       orderBy: 'creationDate',
       limit: 5,
     );

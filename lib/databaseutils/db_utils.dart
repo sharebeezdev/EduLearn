@@ -36,7 +36,7 @@ class DBUtils {
     final List<Map<String, dynamic>> topics = await db.query('topics');
     final List<Map<String, dynamic>> subjects = await db.query('subjects');
     final List<Map<String, dynamic>> trendingTopics =
-        await db.query('topics_of_interest');
+        await db.query('trending_topics');
 
     final List<String> topicNames =
         topics.map((topic) => topic['title'] as String).toList();
@@ -62,7 +62,7 @@ class DBUtils {
       print('Generating Quizzes for $type. start');
       List<String> instructions = [
         'Generate multiple choice quiz related to user interested $type and the $type are: ${names.join(', ')}',
-        'Generate 5 different quizzes and each quiz contains a maximum of 10 questions.',
+        'Generate 5 different quizzes and each topic contains a maximum of 10 questions.',
         'The response should contain quizTitle, quizDescription, imageURL (any image from web), questionText, multiple choices, correct choice, reason why correct choice, and any list of links to learn more.'
       ];
 
@@ -246,13 +246,27 @@ class DBUtils {
       final quizId = await db.insert('QuizOverviews', quizOverview);
       print('Inserted Quiz Overview: $quizOverview with ID $quizId');
 
+      String questionsTable;
+      if (type == 'topics') {
+        questionsTable = 'MyTopicsQuizzes';
+      } else if (type == 'subjects') {
+        questionsTable = 'MySubjectQuizzes';
+      } else {
+        questionsTable = 'FeaturedQuizzes';
+      }
+
       for (var question in questions) {
         question['quizId'] = quizId;
-        await db.insert('MyTopicsQuizzes', question);
+        await db.insert(questionsTable, question);
         print('Inserted Question: $question for Quiz ID $quizId');
       }
       print(
           'Total questions inserted for Quiz ID $quizId: ${questions.length}');
+
+      if (questions.isEmpty) {
+        await db.delete('QuizOverviews', where: 'id = ?', whereArgs: [quizId]);
+        print('Deleted Quiz Overview with ID $quizId due to no questions.');
+      }
     }
 
     print(
@@ -263,17 +277,7 @@ class DBUtils {
   Future<List<QuizQuestion>> fetchQuizQuestions(
       String quizId, String quizType) async {
     final db = await DBHelper().database;
-    String tableName;
-
-    if (quizType == 'topics') {
-      tableName = 'MyTopicsQuizzes';
-    } else if (quizType == 'subjects') {
-      tableName = 'MySubjectQuizzes';
-    } else if (quizType == 'trending_topics') {
-      tableName = 'FeaturedQuizzes';
-    } else {
-      throw Exception('Invalid quiz type');
-    }
+    String tableName = 'QuizzeQuestions';
 
     final List<Map<String, dynamic>> maps = await db.query(
       tableName,

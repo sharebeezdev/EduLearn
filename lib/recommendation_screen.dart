@@ -1,3 +1,4 @@
+import 'package:edu_learn/dataupload_page.dart';
 import 'package:flutter/material.dart';
 import 'package:edu_learn/home_page.dart';
 import 'package:edu_learn/databaseutils/db_utils.dart';
@@ -227,7 +228,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
               onPressed: () async {
                 await DBUtils().clearSubjects();
                 await DBUtils().clearTopics();
-                await DBUtils().clearTopicsOfInterest();
+                // await DBUtils().clearTopicsOfInterest();
                 // Insert new data
                 for (var subject in _favoriteSubjects) {
                   await DBUtils().insertSubject({'name': subject});
@@ -237,10 +238,10 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                   await DBUtils().insertTopic({'title': topic});
                 }
 
-                print('suggested topocics are ' + _suggestedTopics.toString());
-                for (var topic in _suggestedTopics) {
-                  await DBUtils().insertTopicOfInterest({'name': topic});
-                }
+                // print('suggested topocics are ' + _suggestedTopics.toString());
+                // for (var topic in _suggestedTopics) {
+                //   await DBUtils().insertTopicOfInterest({'name': topic});
+                // }
 
                 await DBUtils().setSurveyCompleted();
 
@@ -248,7 +249,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                 if (mounted) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+                    MaterialPageRoute(builder: (context) => DataUploadPage()),
                   );
                 }
                 // Fetch quizzes in the background

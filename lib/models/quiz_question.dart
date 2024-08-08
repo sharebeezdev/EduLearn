@@ -22,7 +22,7 @@ class QuizQuestion {
   factory QuizQuestion.fromMap(Map<String, dynamic> map) {
     // Extract the choices string
     String choicesString = map['choices'] as String;
-
+    print('choicies string si ' + choicesString);
     // Use a regular expression to split the choices correctly
     // This regex assumes that choices are separated by commas and enclosed in double quotes
     final RegExp choiceRegex = RegExp(r'"(.*?)"');
@@ -31,7 +31,7 @@ class QuizQuestion {
     // Extract choices from the matches
     List<String> parsedChoices =
         matches.map((match) => match.group(1)!).toList();
-
+    print('parsedChoices string si ' + parsedChoices.toString());
     return QuizQuestion(
       questionId: map['questionId'],
       quizId: map['quizId'],

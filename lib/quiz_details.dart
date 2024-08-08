@@ -67,6 +67,9 @@ class _QuizDetailsState extends State<QuizDetails> {
         score: score,
         questions: _questions,
         selectedAnswers: _selectedAnswers,
+        quizId: widget.quizId,
+        quizTitle: widget.title,
+        quizType: widget.quizType,
       ),
     ));
   }
