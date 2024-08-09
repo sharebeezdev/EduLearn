@@ -24,6 +24,7 @@ class TrendingTopicProvider with ChangeNotifier {
         description: maps[i]['quizDescription'],
         imageUrl: maps[i]['imageUrl'],
         type: maps[i]['quizType'],
+        topicName: maps[i]['topicName'],
       );
     });
     notifyListeners();

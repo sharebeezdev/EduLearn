@@ -1,4 +1,5 @@
 import 'package:edu_learn/databaseutils/db_helper.dart';
+import 'package:edu_learn/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'databaseutils/db_utils.dart';
@@ -9,11 +10,13 @@ class QuizDetails extends StatefulWidget {
   final String quizId;
   final String title;
   final String quizType;
+  final String topicName;
 
   const QuizDetails({
     required this.quizId,
     required this.title,
     required this.quizType,
+    required this.topicName,
   });
 
   @override
@@ -59,8 +62,9 @@ class _QuizDetailsState extends State<QuizDetails> {
     double score = (correctAnswers / _questions.length) * 100;
 
     // Insert the score into the database
-    await DBUtils().insertQuizScoreDetails(score, widget.quizId);
-
+    await DBUtils()
+        .insertQuizScoreDetails(score, widget.quizId, widget.topicName);
+    print('topicName is ' + widget.topicName);
     // Navigate to the score feedback page
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => ScoreFeedbackPage(
@@ -70,6 +74,7 @@ class _QuizDetailsState extends State<QuizDetails> {
         quizId: widget.quizId,
         quizTitle: widget.title,
         quizType: widget.quizType,
+        topicName: widget.topicName,
       ),
     ));
   }
@@ -77,8 +82,9 @@ class _QuizDetailsState extends State<QuizDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+      appBar: CustomAppBar(
+        title: widget.title,
+        isBackButtonVisible: false,
       ),
       body: FutureBuilder<List<QuizQuestion>>(
         future: _questionsFuture,

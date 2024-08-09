@@ -27,6 +27,7 @@ class QuizCard extends StatelessWidget {
               quizId: quiz.id.toString(),
               title: quiz.title,
               quizType: quiz.type,
+              topicName: quiz.topicName,
             ),
           ),
         );

@@ -35,7 +35,7 @@ class DBUtilsSQL {
   Future<bool> isSurveyCompleted() async {
     final db = await database;
     final result = await db
-        .query('metadata', where: 'key = ?', whereArgs: ['survey_completed']);
+        .query('metadata', where: 'key = ?', whereArgs: ['surveyCompleted']);
     return result.isNotEmpty && result.first['value'] == 'true';
   }
 

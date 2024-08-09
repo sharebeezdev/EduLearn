@@ -12,13 +12,14 @@ class DetailedFeedbackPage extends StatelessWidget {
   final String quizId;
   final String quizTitle;
   final String quizType;
-
+  final String topicName;
   const DetailedFeedbackPage({
     required this.questions,
     required this.selectedAnswers,
     required this.quizId,
     required this.quizTitle,
     required this.quizType,
+    required this.topicName,
   });
 
   @override
@@ -122,6 +123,7 @@ class DetailedFeedbackPage extends StatelessWidget {
                           quizId: quizId,
                           title: quizTitle,
                           quizType: quizType,
+                          topicName: topicName,
                         ),
                       ),
                     );

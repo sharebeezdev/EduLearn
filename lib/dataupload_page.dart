@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:edu_learn/home_page.dart';
+import 'package:edu_learn/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:edu_learn/databaseutils/db_helper.dart';
@@ -79,8 +80,9 @@ class _DataUploadPageState extends State<DataUploadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Data Upload'),
+      appBar: CustomAppBar(
+        title: 'Data Upload',
+        isBackButtonVisible: true,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),

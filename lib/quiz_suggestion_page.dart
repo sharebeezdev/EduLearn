@@ -57,34 +57,37 @@ class _QuizSuggestionsWidgetState extends State<QuizSuggestionsWidget> {
     // Convert QuizOverview objects to Quiz objects
     topicQuizzes = topicQuizOverviews
         .map((overview) => Quiz(
-            id: overview.quizId,
-            title: overview.quizTitle,
-            description: overview.quizDescription,
-            imageUrl: overview.imageUrl,
-            type: overview.quizType
-            // Add other necessary fields here
+              id: overview.quizId,
+              title: overview.quizTitle,
+              description: overview.quizDescription,
+              imageUrl: overview.imageUrl,
+              type: overview.quizType,
+              topicName: overview.topicName,
+              // Add other necessary fields here
             ))
         .toList();
 
     subjectQuizzes = subjectQuizOverviews
         .map((overview) => Quiz(
-            id: overview.quizId,
-            title: overview.quizTitle,
-            description: overview.quizDescription,
-            imageUrl: overview.imageUrl,
-            type: overview.quizType
-            // Add other necessary fields here
+              id: overview.quizId,
+              title: overview.quizTitle,
+              description: overview.quizDescription,
+              imageUrl: overview.imageUrl,
+              type: overview.quizType,
+              topicName: overview.topicName,
+              // Add other necessary fields here
             ))
         .toList();
 
     historicalDataQuizzes = historicalDataQuizOverviews
         .map((overview) => Quiz(
-            id: overview.quizId,
-            title: overview.quizTitle,
-            description: overview.quizDescription,
-            imageUrl: overview.imageUrl,
-            type: overview.quizType
-            // Add other necessary fields here
+              id: overview.quizId,
+              title: overview.quizTitle,
+              description: overview.quizDescription,
+              imageUrl: overview.imageUrl,
+              type: overview.quizType,
+              topicName: overview.topicName,
+              // Add other necessary fields here
             ))
         .toList();
 

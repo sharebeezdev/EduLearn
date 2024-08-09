@@ -6,6 +6,7 @@ class QuizOverview {
   final String imageUrl;
   final String status;
   final String creationDate;
+  final String topicName;
 
   QuizOverview({
     required this.quizId,
@@ -15,6 +16,7 @@ class QuizOverview {
     required this.imageUrl,
     required this.status,
     required this.creationDate,
+    required this.topicName,
   });
 
   factory QuizOverview.fromMap(Map<String, dynamic> map) {
@@ -26,6 +28,7 @@ class QuizOverview {
       imageUrl: map['imageUrl'],
       status: map['status'],
       creationDate: map['creationDate'],
+      topicName: map['topicName'],
     );
   }
 

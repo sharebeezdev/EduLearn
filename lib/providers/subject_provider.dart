@@ -18,12 +18,14 @@ class SubjectsProvider with ChangeNotifier {
       limit: 5,
     );
     _quizzes = List.generate(maps.length, (i) {
+      print('quizes data ' + _quizzes.toString());
       return Quiz(
         id: maps[i]['quizId'],
         title: maps[i]['quizTitle'],
         description: maps[i]['quizDescription'],
         imageUrl: maps[i]['imageUrl'],
         type: maps[i]['quizType'],
+        topicName: maps[i]['topicName'],
       );
     });
     notifyListeners();

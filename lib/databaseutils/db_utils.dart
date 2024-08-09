@@ -43,7 +43,7 @@ class DBUtils {
     final List<String> subjectNames =
         subjects.map((subject) => subject['name'] as String).toList();
     final List<String> trendingTopicNames = trendingTopics
-        .map((trendingTopic) => trendingTopic['name'] as String)
+        .map((trendingTopic) => trendingTopic['topic'] as String)
         .toList();
 
     // Log the retrieved data
@@ -263,10 +263,10 @@ class DBUtils {
       print(
           'Total questions inserted for Quiz ID $quizId: ${questions.length}');
 
-      if (questions.isEmpty) {
-        await db.delete('QuizOverviews', where: 'id = ?', whereArgs: [quizId]);
-        print('Deleted Quiz Overview with ID $quizId due to no questions.');
-      }
+      // if (questions.isEmpty) {
+      //   await db.delete('QuizOverviews', where: 'id = ?', whereArgs: [quizId]);
+      //   print('Deleted Quiz Overview with ID $quizId due to no questions.');
+      // }
     }
 
     print(
@@ -277,7 +277,7 @@ class DBUtils {
   Future<List<QuizQuestion>> fetchQuizQuestions(
       String quizId, String quizType) async {
     final db = await DBHelper().database;
-    String tableName = 'QuizzeQuestions';
+    String tableName = 'QuizzQuestions';
 
     final List<Map<String, dynamic>> maps = await db.query(
       tableName,
@@ -294,6 +294,7 @@ class DBUtils {
   Future<void> insertQuizScoreDetails(
     double score,
     String quizId,
+    String topicName,
   ) async {
     final db = await DBHelper().database;
     await db.insert(
@@ -302,6 +303,7 @@ class DBUtils {
         'quizId': quizId,
         'attemptedDate': DateTime.now().toIso8601String(),
         'percentageScored': score,
+        'topicName': topicName
       },
     );
     // Navigate to results page or show results
@@ -343,6 +345,15 @@ class DBUtils {
     );
   }
 
+  Future<void> insertTrendingTopic(Map<String, String> topic) async {
+    final db = await DBHelper().database;
+    await db.insert(
+      'trending_topics',
+      topic,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
   Future<void> clearSubjects() async {
     final db = await DBHelper().database;
     await db
@@ -358,5 +369,152 @@ class DBUtils {
     final db = await DBHelper().database;
     await db.delete(
         'topics_of_interest'); // Replace 'MyTopics' with your actual table name
+  }
+
+  Future<void> insertQuizzes(String jsonResponse, String topicType) async {
+    final db = await DBHelper().database;
+
+    // List of default image URLs
+    final List<String> defaultImageUrls = [
+      'https://cdn.neurosys.com/wp-content/webp-express/webp-images/uploads/2023/11/what-is-deep-learning.jpg.webp',
+      'https://www.nttdata.com/sg/en/-/media/nttdataapac/ndsg/services/big-data-solutions/big-data-platform/services-bigdata-bigdataplatform-header-2732x1536.jpg?h=1536&iar=0&w=2732&rev=d8893d309b9c402a80f232077e738fed',
+      'https://website-assets-fw.freshworks.com/attachments/ck340ov180hsy65g0yxb6gbhb-1-chatbots-for-marketing-smm.one-half.png',
+      'https://bernardmarr.com/wp-content/uploads/2023/07/Quantum-Computing_-What-Every-CEO-Needs-to-Know.jpg',
+      'https://wellsaidlabs.com/wp-content/uploads/2023/09/blog_ai-ethics-1024x576.jpg',
+      'https://cdn.educba.com/academy/wp-content/uploads/2019/08/What-is-supervised-learning.jpg',
+      'https://www.cwstechnology.com/wp-content/uploads/2024/05/natural-language-processing.jpg',
+      'https://media.licdn.com/dms/image/D5612AQGDKhZPs-jXMw/article-cover_image-shrink_720_1280/0/1701959179280?e=1728518400&v=beta&t=juGFhD4bqV7P5VoWpUOAl3LvBckN77CRZx7mVzeTclI',
+      'https://www.spiceworks.com/wp-content/uploads/2022/01/Main-Components-of-a-Distributed-System.png',
+      'https://justtotaltech.com/wp-content/uploads/2021/04/JTT-Top-11-Data-Mining-Techniques-of-2021-1-1.png',
+      'https://imageio.forbes.com/specials-images/imageserve/642bc7aea9b99c12f3deb166/0x0.jpg?format=jpg&height=900&width=1600&fit=bounds'
+    ];
+
+    Future<String> getValidImageUrl(String imageUrl) async {
+      if (imageUrl == null ||
+          imageUrl.isEmpty ||
+          !(imageUrl.endsWith('.jpg') ||
+              imageUrl.endsWith('.png') ||
+              imageUrl.endsWith('.jpeg'))) {
+        // Return a random default URL if the provided URL is null, empty, or does not end with .jpg, .png, or .jpeg
+        return (defaultImageUrls..shuffle()).first;
+      }
+
+      try {
+        final response = await http.get(Uri.parse(imageUrl));
+        if (response.statusCode == 200 &&
+            response.headers['content-type']?.startsWith('image/') == true) {
+          return imageUrl;
+        } else {
+          // Return a random default URL if the image URL is invalid
+          return (defaultImageUrls..shuffle()).first;
+        }
+      } catch (e) {
+        // Return a random default URL if any error occurs during validation
+        return (defaultImageUrls..shuffle()).first;
+      }
+    }
+
+    try {
+      // Decode the JSON response
+      final Map<String, dynamic> data = json.decode(jsonResponse);
+      final List<dynamic> quizOverviews = data['QuizOverviews'];
+
+      for (var i = 0; i < quizOverviews.length && i < 3; i++) {
+        var quiz = quizOverviews[i];
+
+        try {
+          // Validate the image URL
+          final validImageUrl = await getValidImageUrl(quiz['imageUrl']);
+
+          // Insert into QuizOverviews table
+          final quizId = await db.insert(
+            'QuizOverviews',
+            {
+              'quizTitle': quiz['quizTitle'],
+              'quizDescription': quiz['quizDescription'],
+              'quizType': topicType,
+              'topicName': quiz['topicNAME'],
+              'imageUrl':
+                  validImageUrl, // Use the validated or default image URL
+              'creationDate': DateTime.now().toIso8601String(),
+              'status': 'Not Attempted',
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+
+          // Insert questions into QuizzQuestions table
+          final List<dynamic> questions = quiz['questions'];
+          for (var question in questions) {
+            try {
+              await db.insert(
+                'QuizzQuestions',
+                {
+                  'quizId': quizId,
+                  'questionNumber': question['questionNumber'],
+                  'questionText': question['questionText'],
+                  'choices': json.encode(question['choices']),
+                  'correctChoice': question['correctChoice'],
+                  'reason': question['reason'],
+                  'links': json.encode(question['links'] ?? []),
+                },
+                conflictAlgorithm: ConflictAlgorithm.replace,
+              );
+            } catch (questionError) {
+              print(
+                  'Error inserting question ${question['questionText']} for quiz ${quiz['quizTitle']}: $questionError');
+            }
+          }
+        } catch (quizError) {
+          print('Error inserting quiz ${quiz['quizTitle']}: $quizError');
+        }
+      }
+    } catch (e) {
+      print('Error processing quiz data: $e');
+    }
+  }
+
+  Future<void> insertLearningPathData(String jsonResponse) async {
+    final db = await DBHelper().database;
+    try {
+      // Parse the JSON response
+      final Map<String, dynamic> data = jsonDecode(jsonResponse);
+
+      // Extract title and brief description
+      final String title = data['title'];
+      final String description = data['briefDescription'];
+
+      // Insert data into learningPathOverviews
+      final int lpId = await db.insert(
+        'learningPathOverviews',
+        {
+          'title': title,
+          'description': description,
+          'creationDate': DateTime.now().toIso8601String(),
+          'status': 'Not Attempted',
+        },
+      );
+
+      // Extract learning path steps
+      final List<dynamic> steps = data['learningPath'];
+
+      // Insert each step into learningPathSteps with seqNumber
+      int seqNumber = 1;
+      for (final step in steps) {
+        await db.insert(
+          'learningPathSteps',
+          {
+            'lpId': lpId,
+            'seqNumber': seqNumber,
+            'topicTitle': step['topicTitle'],
+            'topicBrief': step['topicBrief'],
+            'links': step['link'],
+          },
+        );
+        seqNumber++;
+      }
+    } catch (e) {
+      print('Error inserting learning path data: $e');
+      // Handle any errors that occur during the insertion
+    }
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'ai_suggestions_page.dart';
+import 'initial_survey.dart';
+import 'learning_path_suggestions.dart';
 import 'providers/subject_provider.dart';
 import 'providers/topic_provider.dart';
 import 'providers/trending_topicprovider.dart';
@@ -21,13 +24,20 @@ class _HomePageState extends State<HomePage> {
     if (index == 3) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ProfileSetupPage()),
+        MaterialPageRoute(builder: (context) => InitialSurveyScreen()),
       );
     } else {
       setState(() {
         _selectedIndex = index;
       });
     }
+  }
+
+  void _onFloatingActionButtonPressed() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AiSuggestionsPage()),
+    );
   }
 
   @override
@@ -49,6 +59,16 @@ class _HomePageState extends State<HomePage> {
         appBar: CustomAppBar(
           title: 'EduLearn',
           isBackButtonVisible: false,
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _onFloatingActionButtonPressed,
+          child: SizedBox(
+            width: 30,
+            height: 30,
+            child: Image.asset(
+              'assets/images/ai_icon.png',
+            ),
+          ), // Replace with your AI image path
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -90,6 +110,16 @@ class _HomePageState extends State<HomePage> {
                   child: QuizListHorizontalView(
                     quizType: 'Subject',
                   ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Learning Paths',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 270, // Provide a fixed height for ListView
+                  child: LearningPathSuggestions(),
                 ),
                 Text(
                   'Topics to Explore',

@@ -1,8 +1,10 @@
-import 'package:edu_learn/databaseutils/db_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'databaseutils/db_helper.dart';
-import 'recommendation_screen.dart'; // Assuming you have DBHelper configured
+import 'databaseutils/db_utils.dart';
+import 'databaseutils/dbutils_sql.dart';
+import 'recommendation_screen.dart';
+import 'widgets/custom_appbar.dart';
 
 class InitialSurveyScreen extends StatefulWidget {
   @override
@@ -18,11 +20,47 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
   String areaOfDifficulty = '';
   String preferredLearningStyle = '';
 
+  @override
+  void initState() {
+    super.initState();
+    _loadSurveyData();
+    _loadSubjects();
+    _loadTopics();
+  }
+
+  Future<void> _loadSurveyData() async {
+    final db = await DBUtilsSQL().database;
+    final List<Map<String, dynamic>> surveyData =
+        await db.query('SurveyData', limit: 1);
+
+    if (surveyData.isNotEmpty) {
+      setState(() {
+        areaOfDifficulty = surveyData[0]['areaOfDifficulty'] ?? '';
+        preferredLearningStyle = surveyData[0]['preferredLearningStyle'] ?? '';
+      });
+    }
+  }
+
+  Future<void> _loadSubjects() async {
+    final db = await DBUtilsSQL().database;
+    final subjects = await db.query('subjects', columns: ['name']);
+    setState(() {
+      _favoriteSubjects.addAll(subjects.map((s) => s['name'].toString()));
+    });
+  }
+
+  Future<void> _loadTopics() async {
+    final db = await DBUtilsSQL().database;
+    final topics = await db.query('topics', columns: ['title']);
+    setState(() {
+      _favoriteTopics.addAll(topics.map((t) => t['title'].toString()));
+    });
+  }
+
   void _submitSurvey() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      // Save BuildContext in a local variable
       final context = this.context;
 
       await DBHelper().insertSurveyData({
@@ -38,7 +76,6 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
         await DBUtils().insertTopic({'title': topic});
       }
 
-      // Perform navigation after async operations are complete
       if (mounted) {
         Navigator.push(
           context,
@@ -71,12 +108,26 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
     }
   }
 
+  void _deleteSubject(String subject) async {
+    final db = await DBUtilsSQL().database;
+    await db.delete('subjects', where: 'name = ?', whereArgs: [subject]);
+    setState(() {
+      _favoriteSubjects.remove(subject);
+    });
+  }
+
+  void _deleteTopic(String topic) async {
+    final db = await DBUtilsSQL().database;
+    await db.delete('topics', where: 'title = ?', whereArgs: [topic]);
+    setState(() {
+      _favoriteTopics.remove(topic);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Initial Survey'),
-      ),
+      appBar: CustomAppBar(title: 'Survey'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -89,7 +140,8 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _subjectController,
-                      decoration: const InputDecoration(labelText: 'Add a Subject'),
+                      decoration:
+                          const InputDecoration(labelText: 'Add a Subject'),
                       validator: (value) {
                         if (_favoriteSubjects.isEmpty) {
                           return 'Please add at least one favorite subject';
@@ -111,6 +163,7 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
                     backgroundColor: Colors.primaries[
                         _favoriteSubjects.indexOf(subject) %
                             Colors.primaries.length][200],
+                    onDeleted: () => _deleteSubject(subject),
                   );
                 }).toList(),
               ),
@@ -121,7 +174,8 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _topicController,
-                      decoration: const InputDecoration(labelText: 'Add a Topic'),
+                      decoration:
+                          const InputDecoration(labelText: 'Add a Topic'),
                       validator: (value) {
                         if (_favoriteTopics.isEmpty) {
                           return 'Please add at least one favorite topic';
@@ -143,12 +197,15 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
                     backgroundColor: Colors.primaries[
                         _favoriteTopics.indexOf(topic) %
                             Colors.primaries.length][200],
+                    onDeleted: () => _deleteTopic(topic),
                   );
                 }).toList(),
               ),
               const SizedBox(height: 20),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(labelText: 'Area of Difficulty'),
+                value: areaOfDifficulty.isNotEmpty ? areaOfDifficulty : null,
+                decoration:
+                    const InputDecoration(labelText: 'Area of Difficulty'),
                 items: [
                   'Mathematics',
                   'Science',
@@ -178,8 +235,11 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
               ),
               const SizedBox(height: 20),
               DropdownButtonFormField<String>(
-                decoration:
-                    const InputDecoration(labelText: 'Preferred Learning Style'),
+                value: preferredLearningStyle.isNotEmpty
+                    ? preferredLearningStyle
+                    : null,
+                decoration: const InputDecoration(
+                    labelText: 'Preferred Learning Style'),
                 items: [
                   'Visual',
                   'Auditory',

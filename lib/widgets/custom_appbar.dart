@@ -4,10 +4,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool isBackButtonVisible;
+  final bool isSubHeaderVisible;
 
   CustomAppBar({
     required this.title,
-    this.isBackButtonVisible = true,
+    this.isBackButtonVisible = false,
+    this.isSubHeaderVisible = true,
   });
 
   @override
@@ -26,7 +28,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.pop(context);
               },
             )
-          : null,
+          : SizedBox(
+              width: 1,
+            ),
       titleSpacing: 0, // Ensure title does not have default padding
       toolbarHeight: preferredSize.height, // Match the preferred height
     );
@@ -45,14 +49,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               _buildGradientText(title),
               SizedBox(height: 4), // Add spacing between title and subtitle
-              Text(
-                'Powered by Gemini AI',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.grey[600],
+              if (isSubHeaderVisible)
+                Text(
+                  'Powered by Gemini AI',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.grey[600],
+                  ),
                 ),
-              ),
             ],
           ),
         ),

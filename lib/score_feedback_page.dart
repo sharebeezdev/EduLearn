@@ -12,6 +12,7 @@ class ScoreFeedbackPage extends StatelessWidget {
   final String quizId;
   final String quizTitle;
   final String quizType;
+  final String topicName;
 
   const ScoreFeedbackPage({
     required this.score,
@@ -20,6 +21,7 @@ class ScoreFeedbackPage extends StatelessWidget {
     required this.quizId,
     required this.quizTitle,
     required this.quizType,
+    required this.topicName,
   });
 
   String _getFeedbackMessage(double score) {
@@ -84,6 +86,7 @@ class ScoreFeedbackPage extends StatelessWidget {
                       quizId: quizId,
                       quizTitle: quizTitle,
                       quizType: quizType,
+                      topicName: topicName,
                     ),
                   ));
                 },

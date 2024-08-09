@@ -52,6 +52,8 @@ class MyService {
     }
   }
 
+
+
   static Future<List<String>> fetchSuggestionsFromExamData(
       String jsonData) async {
     final apiUrl = 'https://google-gemini-hackathon.onrender.com/gemini';

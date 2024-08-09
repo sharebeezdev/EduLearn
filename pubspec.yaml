@@ -46,6 +46,7 @@ dependencies:
   url_launcher: ^6.1.14
   auto_size_text: ^3.0.0
   flutter_neumorphic: ^3.2.0
+  flutter_inappwebview: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -68,7 +69,8 @@ flutter:
     - assets/exams_data.json
     - assets/images/gcp.png
     - assets/scripts/DemoData.txt
-
+    - assets/scripts/learning_path_data.json
+    - assets/images/ai_icon.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

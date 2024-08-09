@@ -1,9 +1,13 @@
-import 'package:edu_learn/dataupload_page.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:edu_learn/home_page.dart';
 import 'package:edu_learn/databaseutils/db_utils.dart';
 import 'package:edu_learn/databaseutils/service_helper.dart';
 import 'package:edu_learn/widgets/custom_appbar.dart';
+import 'package:edu_learn/dataupload_page.dart';
+import 'package:edu_learn/databaseutils/gemini.dart';
+
+import 'loading_screen.dart';
 
 class RecommendationsScreen extends StatefulWidget {
   final String subjects;
@@ -92,6 +96,18 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     }
   }
 
+  void _removeSubject(String subject) {
+    setState(() {
+      _favoriteSubjects.remove(subject);
+    });
+  }
+
+  void _removeTopic(String topic) {
+    setState(() {
+      _favoriteTopics.remove(topic);
+    });
+  }
+
   Color _getRandomLightColor() {
     List<Color> lightColors = [
       Colors.pink[100]!,
@@ -115,28 +131,12 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     if (_isLoading) {
       // Show loading screen while data is being fetched
       return Scaffold(
-        appBar: CustomAppBar(title: 'Recommendations'),
-        body: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.settings, size: 50, color: Colors.blue),
-              SizedBox(height: 20),
-              Text(
-                'We are generating personalized recommendations for you!',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Please bear with us as we analyze your preferences and find the best topics to enhance your learning experience.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 20),
-              CircularProgressIndicator(),
-            ],
-          ),
+        appBar: CustomAppBar(
+          title: 'Recommendations',
+          isBackButtonVisible: false,
+        ),
+        body: const LoadingScreen(
+          message: 'Preparing personalized recommendations just for you!',
         ),
       );
     }
@@ -159,34 +159,32 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                       return Chip(
                         label: Text(subject),
                         backgroundColor: _getRandomLightColor(),
+                        deleteIcon: const Icon(Icons.cancel),
+                        onDeleted: () {
+                          _removeSubject(subject);
+                        },
                       );
                     }).toList(),
                   ),
                   const SizedBox(height: 20),
                   _buildHeader(
                     'Favorite Topics',
-                    trailing: IconButton(
-                      icon: const Icon(Icons.remove_circle),
-                      onPressed: _removeTopics,
-                    ),
+                    // trailing: IconButton(
+                    //   icon: const Icon(Icons.remove_circle),
+                    //   onPressed: _removeTopics,
+                    // ),
                   ),
                   Wrap(
                     spacing: 8.0,
                     runSpacing: 4.0,
                     children: _favoriteTopics.map((topic) {
-                      return FilterChip(
+                      return Chip(
                         label: Text(topic),
-                        selected: _selectedTopics.contains(topic),
-                        onSelected: (selected) {
-                          setState(() {
-                            if (selected) {
-                              _selectedTopics.add(topic);
-                            } else {
-                              _selectedTopics.remove(topic);
-                            }
-                          });
-                        },
                         backgroundColor: _getRandomLightColor(),
+                        deleteIcon: const Icon(Icons.cancel),
+                        onDeleted: () {
+                          _removeTopic(topic);
+                        },
                       );
                     }).toList(),
                   ),
@@ -206,13 +204,15 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                         label: Text(topic),
                         selected: _selectedTopics.contains(topic),
                         onSelected: (selected) {
-                          setState(() {
-                            if (selected) {
-                              _selectedTopics.add(topic);
-                            } else {
-                              _selectedTopics.remove(topic);
-                            }
-                          });
+                          if (selected) {
+                            setState(() {
+                              _favoriteTopics.add(topic);
+                              _suggestedTopics.remove(topic);
+                            });
+
+                            // Perform the API call outside of setState
+                            _fetchTrendingTopics();
+                          }
                         },
                       );
                     }).toList(),
@@ -226,10 +226,21 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: () async {
+                // Show the loading screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoadingScreen(
+                      message:
+                          'Personalizing your learning experience. Please wait...',
+                    ),
+                  ),
+                );
+
+                // Perform data processing
                 await DBUtils().clearSubjects();
                 await DBUtils().clearTopics();
-                // await DBUtils().clearTopicsOfInterest();
-                // Insert new data
+
                 for (var subject in _favoriteSubjects) {
                   await DBUtils().insertSubject({'name': subject});
                 }
@@ -238,27 +249,34 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                   await DBUtils().insertTopic({'title': topic});
                 }
 
-                // print('suggested topocics are ' + _suggestedTopics.toString());
-                // for (var topic in _suggestedTopics) {
-                //   await DBUtils().insertTopicOfInterest({'name': topic});
-                // }
+                for (var topic in _suggestedTopics) {
+                  await DBUtils().insertTrendingTopic({'topic': topic});
+                }
+
+                // Fetch and insert quiz data
+                Future.wait([
+                  _processQuizzes('Topics', _favoriteTopics),
+                  _processQuizzes('Subjects', _favoriteSubjects),
+                  _processQuizzes('TrendingTopics', _suggestedTopics),
+                  _processLearningPaths(_favoriteTopics),
+                  _processLearningPaths(_favoriteSubjects),
+                  _processLearningPaths(_suggestedTopics),
+                ]);
 
                 await DBUtils().setSurveyCompleted();
 
-                // Navigate to HomePage immediately
+                // Navigate to DataUploadPage
                 if (mounted) {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => DataUploadPage()),
                   );
                 }
-                // Fetch quizzes in the background
-                _fetchAndNotifyUser();
               },
               child: const Text('Save Data'),
               style: ElevatedButton.styleFrom(
-                minimumSize:
-                    Size(double.infinity, 50), // Full width and fixed height
+                minimumSize: const Size(
+                    double.infinity, 50), // Full width and fixed height
               ),
             ),
           ),
@@ -267,31 +285,34 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     );
   }
 
-  Future<void> _fetchAndNotifyUser() async {
-    await DBUtils().fetchAndSaveQuizzes();
+  Future<void> _processQuizzes(String quizType, List<String> topics) async {
+    // Limit the loop to the first three topics
+    for (var i = 0; i < topics.length && i < 3; i++) {
+      var topic = topics[i];
+      try {
+        Map<String, dynamic> quizData = await Gemini.getQuizes(topics: [topic]);
 
-    // Show an alert dialog after fetching quizzes
-    if (mounted) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Content Generated'),
-            content: const Text(
-              'Gemini AI has generated useful content for you based on your interests. Please check the latest updates in your profile.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                  // Optionally, refresh HomePage if needed
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+        String jsonResponse = jsonEncode(quizData);
+        await DBUtils().insertQuizzes(jsonResponse, quizType);
+      } catch (e) {
+        print('Failed to fetch or insert quizzes for topic $topic: $e');
+      }
+    }
+  }
+
+  Future<void> _processLearningPaths(List<String> topics) async {
+    for (var i = 0; i < topics.length && i < 3; i++) {
+      var topic = topics[i];
+      try {
+        Map<String, dynamic> quizData =
+            await Gemini.getLearningPaths(topic: topic);
+
+        String jsonResponse = jsonEncode(quizData);
+        await DBUtils().insertLearningPathData(jsonResponse);
+      } catch (e) {
+        print(
+            'Failed to fetch or insert _processLearningPaths for topic $topics: $e');
+      }
     }
   }
 
@@ -301,7 +322,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.headline6,
         ),
         if (trailing != null) trailing,
       ],
