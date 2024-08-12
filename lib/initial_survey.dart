@@ -43,6 +43,7 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
 
   Future<void> _loadSubjects() async {
     final db = await DBUtilsSQL().database;
+    _favoriteSubjects.clear();
     final subjects = await db.query('subjects', columns: ['name']);
     setState(() {
       _favoriteSubjects.addAll(subjects.map((s) => s['name'].toString()));
@@ -51,6 +52,7 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
 
   Future<void> _loadTopics() async {
     final db = await DBUtilsSQL().database;
+    _favoriteTopics.clear(); // Clear the existing list first
     final topics = await db.query('topics', columns: ['title']);
     setState(() {
       _favoriteTopics.addAll(topics.map((t) => t['title'].toString()));
@@ -127,7 +129,7 @@ class _InitialSurveyScreenState extends State<InitialSurveyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Survey'),
+      // appBar: CustomAppBar(title: 'Survey'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

@@ -108,6 +108,64 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     });
   }
 
+  Future<void> _processAndNavigate(BuildContext context) async {
+    // Show the loading screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoadingScreen(
+          message: 'Personalizing your learning experience. Please wait...',
+        ),
+      ),
+    );
+
+    try {
+      // Perform data processing
+      await DBUtils().clearSubjects();
+      await DBUtils().clearTopics();
+      await DBUtils().clearTopicsOfInterest();
+      for (var subject in _favoriteSubjects) {
+        await DBUtils().insertSubject({'name': subject});
+      }
+
+      for (var topic in _favoriteTopics) {
+        await DBUtils().insertTopic({'title': topic});
+      }
+      int i = 0;
+      print('suggested topics ' + _suggestedTopics.toString());
+      for (var topic in _suggestedTopics) {
+        i++;
+        if (i < 3) {
+          await DBUtils().insertTrendingTopic({'topic': topic});
+        }
+      }
+
+      // Fetch and insert quiz data
+      await Future.wait([
+        _processQuizzes('Topics', _favoriteTopics),
+        _processQuizzes('Subjects', _favoriteSubjects),
+        _processQuizzes('TrendingTopics', _suggestedTopics),
+        _processLearningPaths(_favoriteTopics),
+        _processLearningPaths(_favoriteSubjects),
+        _processLearningPaths(_suggestedTopics),
+      ]);
+
+      await DBUtils().setSurveyCompleted();
+    } finally {
+      // Ensure the loading screen is removed and navigate to DataUploadPage
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context); // Close the loading screen
+      }
+
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DataUploadPage()),
+        );
+      }
+    }
+  }
+
   Color _getRandomLightColor() {
     List<Color> lightColors = [
       Colors.pink[100]!,
@@ -225,54 +283,55 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: () async {
-                // Show the loading screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoadingScreen(
-                      message:
-                          'Personalizing your learning experience. Please wait...',
-                    ),
-                  ),
-                );
+              onPressed: () => _processAndNavigate(context),
+              //  onPressed: () async {
+              // Show the loading screen
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => const LoadingScreen(
+              //       message:
+              //           'Personalizing your learning experience. Please wait...',
+              //     ),
+              //   ),
+              // );
 
-                // Perform data processing
-                await DBUtils().clearSubjects();
-                await DBUtils().clearTopics();
+              // // Perform data processing
+              // await DBUtils().clearSubjects();
+              // await DBUtils().clearTopics();
 
-                for (var subject in _favoriteSubjects) {
-                  await DBUtils().insertSubject({'name': subject});
-                }
+              // for (var subject in _favoriteSubjects) {
+              //   await DBUtils().insertSubject({'name': subject});
+              // }
 
-                for (var topic in _favoriteTopics) {
-                  await DBUtils().insertTopic({'title': topic});
-                }
+              // for (var topic in _favoriteTopics) {
+              //   await DBUtils().insertTopic({'title': topic});
+              // }
 
-                for (var topic in _suggestedTopics) {
-                  await DBUtils().insertTrendingTopic({'topic': topic});
-                }
+              // for (var topic in _suggestedTopics) {
+              //   await DBUtils().insertTrendingTopic({'topic': topic});
+              // }
 
-                // Fetch and insert quiz data
-                Future.wait([
-                  _processQuizzes('Topics', _favoriteTopics),
-                  _processQuizzes('Subjects', _favoriteSubjects),
-                  _processQuizzes('TrendingTopics', _suggestedTopics),
-                  _processLearningPaths(_favoriteTopics),
-                  _processLearningPaths(_favoriteSubjects),
-                  _processLearningPaths(_suggestedTopics),
-                ]);
+              // // Fetch and insert quiz data
+              // Future.wait([
+              //   _processQuizzes('Topics', _favoriteTopics),
+              //   _processQuizzes('Subjects', _favoriteSubjects),
+              //   _processQuizzes('TrendingTopics', _suggestedTopics),
+              //   _processLearningPaths(_favoriteTopics),
+              //   _processLearningPaths(_favoriteSubjects),
+              //   _processLearningPaths(_suggestedTopics),
+              // ]);
 
-                await DBUtils().setSurveyCompleted();
+              // await DBUtils().setSurveyCompleted();
 
-                // Navigate to DataUploadPage
-                if (mounted) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => DataUploadPage()),
-                  );
-                }
-              },
+              // // Navigate to DataUploadPage
+              // if (mounted) {
+              //   Navigator.pushReplacement(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => DataUploadPage()),
+              //   );
+              // }
+              //   },
               child: const Text('Save Data'),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(
@@ -290,24 +349,34 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     for (var i = 0; i < topics.length && i < 3; i++) {
       var topic = topics[i];
       try {
-        Map<String, dynamic> quizData = await Gemini.getQuizes(topics: [topic]);
+        print('Inserting quiz for quizzes for quizType $quizType and topoic ' +
+            topic);
+        Map<String, dynamic> quizData =
+            await Gemini.getQuizzes(topics: [topic]);
 
         String jsonResponse = jsonEncode(quizData);
         await DBUtils().insertQuizzes(jsonResponse, quizType);
+        print(
+            'Inserting quiz forquizzes for quizType $quizType and topoic end ' +
+                topic);
       } catch (e) {
-        print('Failed to fetch or insert quizzes for topic $topic: $e');
+        print(
+            'Failed to fetch or insert quizzes for quizType $quizType and topic $topic: $e');
       }
     }
   }
 
   Future<void> _processLearningPaths(List<String> topics) async {
     for (var i = 0; i < topics.length && i < 3; i++) {
+      print('_processLearningPaths topics are ' + topics.toString());
       var topic = topics[i];
       try {
+        print('Getting learning paths for topics $topic');
         Map<String, dynamic> quizData =
             await Gemini.getLearningPaths(topic: topic);
 
         String jsonResponse = jsonEncode(quizData);
+        Gemini.printPayloadInChunks(jsonResponse);
         await DBUtils().insertLearningPathData(jsonResponse);
       } catch (e) {
         print(

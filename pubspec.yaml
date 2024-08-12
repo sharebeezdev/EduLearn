@@ -47,6 +47,7 @@ dependencies:
   auto_size_text: ^3.0.0
   flutter_neumorphic: ^3.2.0
   flutter_inappwebview: ^6.0.0
+  syncfusion_flutter_charts: ^21.2.4
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,7 @@ flutter:
     - assets/scripts/DemoData.txt
     - assets/scripts/learning_path_data.json
     - assets/images/ai_icon.png
+    - assets/scripts/scores.json
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

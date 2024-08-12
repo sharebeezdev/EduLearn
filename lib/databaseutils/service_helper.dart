@@ -13,7 +13,7 @@ class MyService {
     List<String> instructions = [
       "Please suggest some trendy topics to learn.",
       "If user provides any topics that he already have then suggest some more topics based on his input else suggest trendy topics for learning purpose",
-      "Response should return top 10 topics names only",
+      "Response should return top 5 topics names only",
       "response should contain topic names as comma separate values, such that i can parse. generate a json response with topics as key and value as your suggestions"
     ];
 
@@ -31,8 +31,9 @@ class MyService {
     };
 
     final String requestPayloadJson = jsonEncode(requestPayload);
+    const String baseUrl = 'https://codelab-gemini-ai-2r5l3cycfq-uc.a.run.app';
     final String apiUrl =
-        'https://google-gemini-hackathon.onrender.com/gemini?promt=${Uri.encodeComponent(requestPayloadJson)}';
+        '$baseUrl/gemini?prompt=${Uri.encodeComponent(requestPayloadJson)}';
 
     print('Sending request to API URL: $apiUrl');
     final response = await http.get(Uri.parse(apiUrl));
@@ -51,8 +52,6 @@ class MyService {
       throw Exception('Failed to load trending topics');
     }
   }
-
-
 
   static Future<List<String>> fetchSuggestionsFromExamData(
       String jsonData) async {

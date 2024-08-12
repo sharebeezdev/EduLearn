@@ -368,7 +368,7 @@ class DBUtils {
   Future<void> clearTopicsOfInterest() async {
     final db = await DBHelper().database;
     await db.delete(
-        'topics_of_interest'); // Replace 'MyTopics' with your actual table name
+        'trending_topics'); // Replace 'MyTopics' with your actual table name
   }
 
   Future<void> insertQuizzes(String jsonResponse, String topicType) async {
@@ -433,7 +433,7 @@ class DBUtils {
               'quizTitle': quiz['quizTitle'],
               'quizDescription': quiz['quizDescription'],
               'quizType': topicType,
-              'topicName': quiz['topicNAME'],
+              'topicName': quiz['topicName'],
               'imageUrl':
                   validImageUrl, // Use the validated or default image URL
               'creationDate': DateTime.now().toIso8601String(),
@@ -441,7 +441,7 @@ class DBUtils {
             },
             conflictAlgorithm: ConflictAlgorithm.replace,
           );
-
+          print('quz over');
           // Insert questions into QuizzQuestions table
           final List<dynamic> questions = quiz['questions'];
           for (var question in questions) {
@@ -478,7 +478,7 @@ class DBUtils {
     try {
       // Parse the JSON response
       final Map<String, dynamic> data = jsonDecode(jsonResponse);
-
+      print('Inserting learning path for title ${data['title']}');
       // Extract title and brief description
       final String title = data['title'];
       final String description = data['briefDescription'];
@@ -516,5 +516,49 @@ class DBUtils {
       print('Error inserting learning path data: $e');
       // Handle any errors that occur during the insertion
     }
+  }
+
+  Future<String> createJsonRequestBody() async {
+    final db = await DBHelper().database;
+
+    // Extracting data from QuizScores table
+    final List<Map<String, dynamic>> quizScores = await db.query('QuizScores');
+
+    // Extracting data from SurveyData table
+    final List<Map<String, dynamic>> surveyData = await db.query('SurveyData');
+
+    // Extracting data from exam_scores table
+    final List<Map<String, dynamic>> examScores = await db.query('exam_scores');
+
+    // Extracting data from project_grades table
+    final List<Map<String, dynamic>> projectGrades =
+        await db.query('project_grades');
+
+    // Extracting data from teacher_feedback table
+    final List<Map<String, dynamic>> teacherFeedback =
+        await db.query('teacher_feedback');
+
+    // Extracting data from topics table
+    final List<Map<String, dynamic>> topics = await db.query('topics');
+
+    // Extracting data from subjects table
+    final List<Map<String, dynamic>> subjects = await db.query('subjects');
+
+    // Creating a JSON object by combining the extracted data
+    final Map<String, dynamic> requestBody = {
+      'quizScores': quizScores,
+      'surveyData': surveyData,
+      'examScores': examScores,
+      'projectGrades': projectGrades,
+      'teacherFeedback': teacherFeedback,
+      'topics': topics,
+      'subjects': subjects,
+    };
+
+    // Convert the JSON object to a string
+    String jsonString = jsonEncode(requestBody);
+
+    // Return the JSON string to be used as the request body
+    return jsonString;
   }
 }

@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS trending_topics (
   topic TEXT
 );
 
-CREATE TABLE Profile (
+CREATE TABLE UserEduLearnProfile (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     age INTEGER NOT NULL,
@@ -119,64 +119,28 @@ CREATE TABLE IF NOT EXISTS teacher_feedback (
 -- Insert sample subjects
 INSERT INTO subjects (name) VALUES
 ('Machine Learning'),
-('Data Mining'),
-('Natural Language Processing'),
-('Cryptography'),
-('Distributed Systems');
+('Information Technology');
 
 -- Insert sample topics
 INSERT INTO topics (title, description) VALUES
-('Supervised Learning', 'Study of supervised learning algorithms'),
-('Clustering', 'Study of clustering algorithms'),
-('Natural Language Processing', 'Study of NLP techniques'),
-('Cryptography', 'Study of secure communication techniques'),
-('Distributed Systems', 'Study of distributed computing systems');
+('Flutter', 'Study of supervised learning algorithms'),
+('Google Cloud', 'Study of clustering algorithms'),
+('Java', 'Study of NLP techniques');
 
 -- Insert sample trending topics
 INSERT INTO trending_topics (topic) VALUES
 ('Deep Learning'),
-('Big Data'),
-('Chatbots'),
+('Flutter'),
+('Python'),
 ('Quantum Computing'),
-('Edge Computing'),
-('AI Ethics'),
-('Federated Learning'),
-('Reinforcement Learning'),
-('GANs'),
-('Cybersecurity');
+('Gemini AI');
 
 
 -- Insert sample quiz overviews
 -- Insert quizzes for topics
 INSERT INTO QuizOverviews (quizTitle, quizDescription, quizType, topicName, imageUrl, status, creationDate) VALUES
-('Introduction to Supervised Learning', 'A comprehensive quiz on supervised learning concepts and techniques.', 'Topics', 'Supervised Learning', 'https://images.unsplash.com/photo-1591696205602-2d0a6824a195?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', 'Not Attempted', '2024-01-01'),
-('Advanced Clustering Methods', 'Test your knowledge on advanced clustering methods and algorithms.', 'Topics', 'Clustering', 'https://images.unsplash.com/photo-1502882701420-6a09a0f74e66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', 'Not Attempted', '2024-01-02');
+('Introduction to Supervised Learning', 'A comprehensive quiz on supervised learning concepts and techniques.', 'Topics', 'Supervised Learning', 'https://cdn.educba.com/academy/wp-content/uploads/2019/08/What-is-supervised-learning.jpg', 'Not Attempted', '2024-01-01');
 
--- Insert quizzes for subjects
-INSERT INTO QuizOverviews (quizTitle, quizDescription, quizType, topicName, imageUrl, status, creationDate) VALUES
-('Fundamentals of Data Mining', 'Assess your understanding of data mining techniques and applications.', 'Subject', 'Data Mining', 'https://images.unsplash.com/photo-1593642634367-d91a135587b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', 'Not Attempted', '2024-01-03'),
-('Introduction to Cryptography', 'A quiz on the basics and principles of cryptography.', 'Subject', 'Cryptography', 'https://images.unsplash.com/photo-1593642634367-d91a135587b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', 'Not Attempted', '2024-01-04');
-
--- Insert quizzes for trending topics
-INSERT INTO QuizOverviews (quizTitle, quizDescription, quizType, topicName, imageUrl, status, creationDate) VALUES
-('Deep Learning Concepts', 'Explore key concepts and techniques in deep learning.', 'TrendingTopic', 'Deep Learning', 'https://images.unsplash.com/photo-1506748686214e9df14f4f2f2c60?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwyNzA0NjN8MHwxfGFsbHwxfHx8fHx8fHwxNjcwMTgxMjkw&ixlib=rb-1.2.1&q=80&w=400', 'Not Attempted', '2024-01-05'),
-('Advanced Deep Learning', 'Test your knowledge on advanced topics in deep learning.', 'TrendingTopic', 'Deep Learning', 'https://images.unsplash.com/photo-1603261248595-2ed20585e53b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', 'Not Attempted', '2024-01-10');
-
-INSERT INTO QuizOverviews (quizTitle, quizDescription, quizType, topicName, imageUrl, status, creationDate) VALUES
-('Big Data Fundamentals', 'Test your knowledge on the fundamentals and applications of big data.', 'TrendingTopic', 'Big Data', 'https://images.unsplash.com/photo-1592331605704-6d3b145fc32e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', 'Not Attempted', '2024-01-06'),
-('Advanced Big Data Technologies', 'Explore advanced technologies and tools used in big data analytics.', 'TrendingTopic', 'Big Data', 'https://images.unsplash.com/photo-1506748686214f7de7df68c5b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', 'Not Attempted', '2024-01-12');
-
-INSERT INTO QuizOverviews (quizTitle, quizDescription, quizType, topicName, imageUrl, status, creationDate) VALUES
-('Introduction to Chatbots', 'Learn about the basics of chatbots and their implementations.', 'TrendingTopic', 'Chatbots', 'https://images.unsplash.com/photo-1598400743194-67cfb78f4349?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', 'Not Attempted', '2024-01-07'),
-('Building Effective Chatbots', 'Explore techniques and best practices for creating chatbots.', 'TrendingTopic', 'Chatbots', 'https://images.unsplash.com/photo-1603267437632-8c8c0c6c5be6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', 'Not Attempted', '2024-01-14');
-
-INSERT INTO QuizOverviews (quizTitle, quizDescription, quizType, topicName, imageUrl, status, creationDate) VALUES
-('Introduction to Quantum Computing', 'Discover the basics of quantum computing and its principles.', 'TrendingTopic', 'Quantum Computing', 'https://images.unsplash.com/photo-1555949912-299d5e9e25f0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', 'Not Attempted', '2024-01-08'),
-('Advanced Quantum Computing Concepts', 'Test your knowledge on advanced topics in quantum computing.', 'TrendingTopic', 'Quantum Computing', 'https://images.unsplash.com/photo-1552203985-f5f63e80d881?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', 'Not Attempted', '2024-01-16');
-
-INSERT INTO QuizOverviews (quizTitle, quizDescription, quizType, topicName, imageUrl, status, creationDate) VALUES
-('Introduction to Edge Computing', 'Learn about the fundamentals of edge computing and its applications.', 'TrendingTopic', 'Edge Computing', 'https://images.unsplash.com/photo-1550821326-0a2a9a46f4f6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', 'Not Attempted', '2024-01-09'),
-('Advanced Edge Computing Solutions', 'Explore advanced concepts and solutions in edge computing.', 'TrendingTopic', 'Edge Computing', 'https://images.unsplash.com/photo-1518770660439-463e2e88d8d0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', 'Not Attempted', '2024-01-20');
 
 -- Insert sample quiz questions
 -- Questions for Supervised Learning quiz
@@ -187,59 +151,8 @@ INSERT INTO QuizzQuestions (quizId, questionNumber, questionText, choices, corre
 (1, 4, 'Which of these is a supervised learning task?', '["Customer segmentation", "Image classification", "Anomaly detection", "Topic modeling"]', 'Image classification', 'Image classification is a supervised learning task where the goal is to classify images into predefined categories.', 'https://scikit-learn.org/stable/modules/supervised_learning.html'),
 (1, 5, 'What does the term "training data" refer to?', '["Data used to evaluate model performance", "Data used to build and train the model", "Data used for data preprocessing", "Data used for feature selection"]', 'Data used to build and train the model', 'Training data is the data used to build and train the model by providing it with examples of inputs and their corresponding outputs.', 'https://en.wikipedia.org/wiki/Training_data');
 
--- Questions for Clustering quiz
-INSERT INTO QuizzQuestions (quizId, questionNumber, questionText, choices, correctChoice, reason, links) VALUES
-(2, 1, 'What is clustering?', '["A task of grouping a set of objects based on their similarities", "A method for predicting continuous values", "A technique for reducing dimensionality", "A process of secure data transmission"]', 'A task of grouping a set of objects based on their similarities', 'Clustering involves grouping objects based on their similarities, with the goal of discovering underlying patterns.', 'https://en.wikipedia.org/wiki/Cluster_analysis'),
-(2, 2, 'Which algorithm is commonly used for clustering?', '["Decision Trees", "Naive Bayes", "K-Means", "Logistic Regression"]', 'K-Means', 'K-Means is a widely used clustering algorithm that partitions data into K clusters.', 'https://scikit-learn.org/stable/modules/clustering.html#k-means'),
-(2, 3, 'What does "K" represent in K-Means clustering?', '["The number of features", "The number of clusters", "The number of iterations", "The number of data points"]', 'The number of clusters', 'In K-Means clustering, "K" represents the number of clusters the data should be partitioned into.', 'https://scikit-learn.org/stable/modules/clustering.html#k-means'),
-(2, 4, 'Which method is used to determine the optimal number of clusters in K-Means?', '["Elbow method", "Silhouette analysis", "Hierarchical clustering", "Principal component analysis"]', 'Elbow method', 'The Elbow method is commonly used to determine the optimal number of clusters by plotting the variance explained as a function of the number of clusters.', 'https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set'),
-(2, 5, 'What is a centroid in clustering?', '["The average value of data points in a cluster", "The minimum value of data points in a cluster", "A data point that represents the center of a cluster", "The distance between two clusters"]', 'The average value of data points in a cluster', 'A centroid is the average value of data points in a cluster and represents the center of the cluster.', 'https://en.wikipedia.org/wiki/Centroid');
 
--- Questions for Data Mining quiz
-INSERT INTO QuizzQuestions (quizId, questionNumber, questionText, choices, correctChoice, reason, links) VALUES
-(3, 1, 'What is data mining?', '["The process of extracting useful information from large datasets", "The process of securing communication", "The practice of data cleaning", "The technique for image recognition"]', 'The process of extracting useful information from large datasets', 'Data mining involves analyzing large datasets to uncover hidden patterns, correlations, and insights.', 'https://en.wikipedia.org/wiki/Data_mining'),
-(3, 2, 'Which technique is commonly used in data mining?', '["Regression analysis", "Classification", "Clustering", "All of the above"]', 'All of the above', 'Data mining uses various techniques including regression analysis, classification, and clustering to analyze data.', 'https://www.dataminingtools.net'),
-(3, 3, 'What is the purpose of classification in data mining?', '["To assign items to predefined categories", "To group similar items together", "To reduce the dimensionality of data", "To identify anomalies in data"]', 'To assign items to predefined categories', 'Classification in data mining is used to assign items to predefined categories based on their features.', 'https://en.wikipedia.org/wiki/Classification_(data_mining)'),
-(3, 4, 'Which of these is a popular data mining tool?', '["Apache Spark", "Excel", "MATLAB", "SPSS"]', 'Apache Spark', 'Apache Spark is a popular open-source data mining and big data processing tool used for data analysis.', 'https://spark.apache.org/'),
-(3, 5, 'What is association rule mining?', '["A technique used to discover relationships between variables in large datasets", "A method for clustering data points", "A technique for dimensionality reduction", "A method for securing data"]', 'A technique used to discover relationships between variables in large datasets', 'Association rule mining is used to discover interesting relationships and associations between variables in large datasets.', 'https://en.wikipedia.org/wiki/Association_rule_learning');
 
--- Questions for Cryptography quiz
-INSERT INTO QuizzQuestions (quizId, questionNumber, questionText, choices, correctChoice, reason, links) VALUES
-(4, 1, 'What is cryptography?', '["The practice of securing communication through codes", "The study of machine learning algorithms", "The process of clustering data", "A technique for image processing"]', 'The practice of securing communication through codes', 'Cryptography involves securing communication and data through encryption and decryption methods.', 'https://en.wikipedia.org/wiki/Cryptography'),
-(4, 2, 'Which method is used to secure data in cryptography?', '["Encryption", "Regression", "Clustering", "Classification"]', 'Encryption', 'Encryption is used in cryptography to convert data into a coded format to prevent unauthorized access.', 'https://en.wikipedia.org/wiki/Encryption'),
-(4, 3, 'What is the main purpose of decryption?', '["To convert encrypted data back into its original form", "To encode data for secure transmission", "To perform data analysis", "To clean data"]', 'To convert encrypted data back into its original form', 'Decryption is the process of converting encrypted data back into its original form so that it can be understood.', 'https://en.wikipedia.org/wiki/Decryption'),
-(4, 4, 'Which algorithm is commonly used in modern cryptography?', '["AES", "RSA", "DES", "All of the above"]', 'All of the above', 'Modern cryptography uses several algorithms including AES, RSA, and DES for securing data.', 'https://en.wikipedia.org/wiki/Advanced_Encryption_Standard'),
-(4, 5, 'What is a cryptographic key?', '["A piece of information used to encrypt or decrypt data", "A code used to identify a data source", "A method for clustering data", "A technique for data visualization"]', 'A piece of information used to encrypt or decrypt data', 'A cryptographic key is used to encrypt and decrypt data to ensure its security.', 'https://en.wikipedia.org/wiki/Cryptographic_key');
-
--- Questions for Deep Learning quiz
-INSERT INTO QuizzQuestions (quizId, questionNumber, questionText, choices, correctChoice, reason, links) VALUES
-(5, 1, 'What is a common activation function used in deep learning networks?', '["Sigmoid", "ReLU", "Tanh", "Softmax"]', 'ReLU', 'ReLU (Rectified Linear Unit) is a widely used activation function in deep learning due to its simplicity and effectiveness.', 'https://en.wikipedia.org/wiki/Rectifier_(neural_networks)'),
-(5, 2, 'What is the purpose of dropout in deep learning?', '["Prevent overfitting", "Increase training speed", "Enhance data quality", "Reduce memory usage"]', 'Prevent overfitting', 'Dropout is a regularization technique used to prevent overfitting by randomly dropping units during training.', 'https://www.cs.toronto.edu/~hinton/absps/JMLRdropout.pdf'),
-(5, 3, 'What type of neural network is specifically designed for sequence data?', '["Recurrent Neural Networks", "Convolutional Neural Networks", "Feedforward Neural Networks", "Generative Adversarial Networks"]', 'Recurrent Neural Networks', 'Recurrent Neural Networks (RNNs) are designed to handle sequence data and temporal dynamics.', 'https://en.wikipedia.org/wiki/Recurrent_neural_network'),
-(5, 4, 'What is transfer learning?', '["Using a pre-trained model for a different but related task", "Training a model from scratch", "Creating synthetic data for training", "Applying a model to a new dataset without changes"]', 'Using a pre-trained model for a different but related task', 'Transfer learning involves taking a pre-trained model and adapting it to a new, but related problem.', 'https://en.wikipedia.org/wiki/Transfer_learning'),
-(5, 5, 'Which framework is known for its support for neural network visualization?', '["TensorBoard", "Matplotlib", "Plotly", "Seaborn"]', 'TensorBoard', 'TensorBoard is a tool within TensorFlow for visualizing the training of neural networks.', 'https://www.tensorflow.org/tensorboard');
-
--- Questions for Big Data quiz
-INSERT INTO QuizzQuestions (quizId, questionNumber, questionText, choices, correctChoice, reason, links) VALUES
-(6, 1, 'Which of the following is a characteristic of big data?', '["Volume", "Variety", "Velocity", "All of the above"]', 'All of the above', 'Big data is characterized by its high volume, variety, and velocity.', 'https://en.wikipedia.org/wiki/Big_data'),
-(6, 2, 'What is the primary purpose of data warehousing?', '["To store large volumes of data", "To analyze data in real-time", "To perform data mining", "To visualize data"]', 'To store large volumes of data', 'Data warehousing is used to store large volumes of data from various sources for analysis and reporting.', 'https://en.wikipedia.org/wiki/Data_warehouse'),
-(6, 3, 'Which tool is used for distributed processing of large datasets?', '["Apache Hadoop", "Microsoft Excel", "SPSS", "MATLAB"]', 'Apache Hadoop', 'Apache Hadoop is designed for distributed processing of large datasets across clusters of computers.', 'https://hadoop.apache.org/'),
-(6, 4, 'What is the purpose of MapReduce in big data processing?', '["To process and generate large data sets with a parallel, distributed algorithm", "To visualize data trends", "To clean and preprocess data", "To create data backups"]', 'To process and generate large data sets with a parallel, distributed algorithm', 'MapReduce is a programming model used to process and generate large datasets using a distributed algorithm.', 'https://en.wikipedia.org/wiki/MapReduce'),
-(6, 5, 'What is the role of a data lake?', '["To store raw and unstructured data", "To provide real-time analytics", "To perform complex queries", "To visualize data"]', 'To store raw and unstructured data', 'A data lake stores raw and unstructured data from various sources for later analysis.', 'https://en.wikipedia.org/wiki/Data_lake');
-
-INSERT INTO QuizzQuestions (quizId, questionNumber, questionText, choices, correctChoice, reason, links) VALUES
-(7, 1, 'What is the main purpose of a chatbot?', '["To simulate conversation with users", "To analyze data", "To create visualizations", "To manage databases"]', 'To simulate conversation with users', 'Chatbots are designed to simulate conversation and interact with users in a natural way.', 'https://en.wikipedia.org/wiki/Chatbot'),
-(7, 2, 'Which technology is often used for chatbot development?', '["Natural Language Processing", "Data Encryption", "Machine Learning", "Data Visualization"]', 'Natural Language Processing', 'Natural Language Processing (NLP) is crucial for understanding and generating human-like text in chatbots.', 'https://en.wikipedia.org/wiki/Natural_language_processing'),
-(7, 3, 'What is a common platform for building chatbots?', '["Dialogflow", "Apache Hadoop", "TensorFlow", "Apache Kafka"]', 'Dialogflow', 'Dialogflow is a popular platform for building conversational interfaces and chatbots.', 'https://dialogflow.com/'),
-(7, 4, 'What does NLP stand for in chatbot technology?', '["Natural Language Processing", "Neural Language Programming", "Natural Learning Process", "New Language Paradigm"]', 'Natural Language Processing', 'NLP stands for Natural Language Processing, which is used for understanding and generating human language.', 'https://en.wikipedia.org/wiki/Natural_language_processing'),
-(7, 5, 'Which type of chatbot responds based on predefined rules?', '["Rule-based chatbot", "AI-based chatbot", "Hybrid chatbot", "Contextual chatbot"]', 'Rule-based chatbot', 'Rule-based chatbots follow predefined rules and scripts to generate responses.', 'https://en.wikipedia.org/wiki/Chatbot#Rule-based_chatbots');
-
-INSERT INTO QuizzQuestions (quizId, questionNumber, questionText, choices, correctChoice, reason, links) VALUES
-(9, 1, 'What is edge computing?', '["Computing performed near the data source", "A method for large-scale data processing", "A type of cloud computing", "A database management system"]', 'Computing performed near the data source', 'Edge computing involves performing computing tasks closer to the data source to reduce latency and bandwidth usage.', 'https://en.wikipedia.org/wiki/Edge_computing'),
-(9, 2, 'What is a major benefit of edge computing?', '["Reduced latency", "Increased data storage", "Simplified data management", "Enhanced data security"]', 'Reduced latency', 'Edge computing reduces latency by processing data closer to the source, improving response times.', 'https://www.ibm.com/cloud/learn/edge-computing'),
-(9, 3, 'Which type of devices typically perform edge computing?', '["IoT devices", "Data centers", "Mainframe computers", "Server farms"]', 'IoT devices', 'IoT devices are commonly used in edge computing to process data locally and reduce the need for data transmission to centralized servers.', 'https://en.wikipedia.org/wiki/Internet_of_things'),
-(9, 4, 'What is a common challenge of edge computing?', '["Device management", "Data encryption", "Network bandwidth", "Cloud storage"]', 'Device management', 'Managing a large number of edge devices can be challenging due to their distributed nature.', 'https://www.techradar.com/news/what-is-edge-computing'),
-(9, 5, 'Which technology complements edge computing for data transmission?', '["5G networks", "Wi-Fi", "Ethernet", "Satellite"]', '5G networks', '5G networks complement edge computing by providing high-speed and low-latency data transmission.', 'https://www.ericsson.com/en/5g');
 -- Insert sample exam scores
 INSERT INTO exam_scores (subject, score, date) VALUES
 ('Machine Learning', 85, '2024-01-01'),

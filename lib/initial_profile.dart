@@ -29,7 +29,7 @@ class _ProfileCreationPageState extends State<ProfileCreationPage> {
 
       // Insert profile data into the Profile table
       final db = await DBUtilsSQL().database;
-      await db.insert('Profile', {
+      await db.insert('UserEduLearnProfile', {
         'name': _nameController.text,
         'age': int.parse(_ageController.text),
         'gender': _gender,

@@ -1,0 +1,105 @@
+{
+    "exam_scores": [
+      {
+        "subject": "Machine Learning",
+        "score": 85,
+        "date": "2024-01-01"
+      },
+      {
+        "subject": "Data Mining",
+        "score": 78,
+        "date": "2024-01-02"
+      },
+      {
+        "subject": "Natural Language Processing",
+        "score": 92,
+        "date": "2024-01-03"
+      },
+      {
+        "subject": "Cryptography",
+        "score": 88,
+        "date": "2024-01-04"
+      },
+      {
+        "subject": "Distributed Systems",
+        "score": 79,
+        "date": "2024-01-05"
+      }
+    ],
+    "project_grades": [
+      {
+        "projectName": "ML Project",
+        "grade": "A",
+        "date": "2024-01-10"
+      },
+      {
+        "projectName": "DM Project",
+        "grade": "B+",
+        "date": "2024-01-15"
+      },
+      {
+        "projectName": "NLP Project",
+        "grade": "A-",
+        "date": "2024-01-20"
+      },
+      {
+        "projectName": "Cryptography Project",
+        "grade": "A",
+        "date": "2024-01-25"
+      },
+      {
+        "projectName": "DS Project",
+        "grade": "B",
+        "date": "2024-01-30"
+      }
+    ],
+    "teacher_feedback": [
+      {
+        "feedback": "Excellent progress in ML",
+        "date": "2024-01-01"
+      },
+      {
+        "feedback": "Needs improvement in Data Mining",
+        "date": "2024-01-02"
+      },
+      {
+        "feedback": "Outstanding performance in NLP",
+        "date": "2024-01-03"
+      },
+      {
+        "feedback": "Good understanding of Cryptography",
+        "date": "2024-01-04"
+      },
+      {
+        "feedback": "Average performance in Distributed Systems",
+        "date": "2024-01-05"
+      }
+    ],
+    "quiz_scores": [
+      {
+        "quizId": 1,
+        "attemptedDate": "2024-08-01",
+        "percentageScored": 88.5
+      },
+      {
+        "quizId": 2,
+        "attemptedDate": "2024-08-02",
+        "percentageScored": 75.0
+      },
+      {
+        "quizId": 3,
+        "attemptedDate": "2024-08-03",
+        "percentageScored": 92.3
+      },
+      {
+        "quizId": 4,
+        "attemptedDate": "2024-08-04",
+        "percentageScored": 81.2
+      },
+      {
+        "quizId": 5,
+        "attemptedDate": "2024-08-05",
+        "percentageScored": 67.8
+      }
+    ]
+  }

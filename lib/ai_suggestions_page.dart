@@ -46,6 +46,7 @@ class _AiSuggestionsPageState extends State<AiSuggestionsPage> {
       appBar: CustomAppBar(
         title: 'Ask Gemini',
         isBackButtonVisible: true,
+        isSubHeaderVisible: false,
       ),
       body: Column(
         children: [

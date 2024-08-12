@@ -14,7 +14,7 @@ class TopicsProvider with ChangeNotifier {
       'QuizOverviews',
       where: 'quizType = ? AND status = ?',
       whereArgs: ['Topics', 'Not Attempted'],
-      orderBy: 'creationDate',
+      orderBy: 'quizId ASC, creationDate ASC',
       limit: 5,
     );
     _quizzes = List.generate(maps.length, (i) {

@@ -1,16 +1,17 @@
+import 'package:edu_learn/new-home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'ai_suggestions_page.dart';
+import 'ideas.dart';
 import 'initial_survey.dart';
+import 'insights.dart';
 import 'learning_path_suggestions.dart';
 import 'providers/subject_provider.dart';
 import 'providers/topic_provider.dart';
 import 'providers/trending_topicprovider.dart';
 import 'widgets/custom_appbar.dart';
-import 'profile_setup_page.dart';
 import 'quiz_list.dart';
-import 'widgets/quiz_card.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,24 +21,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  void _onItemTapped(int index) {
-    if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => InitialSurveyScreen()),
-      );
-    } else {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-  }
+  // Titles for each tab
+  final List<String> _titles = [
+    'EduLearn',
+    'Insights',
+    'Ideas',
+    'Initial Survey',
+    'AI Suggestions',
+    // Added Insights title
+  ];
 
-  void _onFloatingActionButtonPressed() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AiSuggestionsPage()),
-    );
+  // State variable to hold the current title
+  String _appBarTitle = 'EduLearn';
+
+  final List<Widget> _pages = [
+    HomeContent(),
+    InsightsPage(),
+    IdeasPage(),
+    InitialSurveyScreen(),
+    //  AiSuggestionsPage(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _appBarTitle =
+          _titles[index]; // Update the title based on the selected index
+    });
   }
 
   @override
@@ -57,126 +67,139 @@ class _HomePageState extends State<HomePage> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: CustomAppBar(
-          title: 'EduLearn',
+          title: _appBarTitle,
           isBackButtonVisible: false,
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _onFloatingActionButtonPressed,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AiSuggestionsPage()),
+            );
+          },
           child: SizedBox(
             width: 30,
             height: 30,
             child: Image.asset(
               'assets/images/ai_icon.png',
             ),
-          ), // Replace with your AI image path
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Featured Quizzes',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                const SizedBox(height: 10),
-                const SizedBox(
-                  height: 200,
-                  child: QuizListHorizontalView(
-                    quizType: 'TrendingTopic',
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Quizzes: Topics',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                const SizedBox(height: 10),
-                const SizedBox(
-                  height: 200,
-                  child: QuizListHorizontalView(
-                    quizType: 'Topics',
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Quizzes: Subjects',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                const SizedBox(height: 10),
-                const SizedBox(
-                  height: 200,
-                  child: QuizListHorizontalView(
-                    quizType: 'Subject',
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Learning Paths',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 270, // Provide a fixed height for ListView
-                  child: LearningPathSuggestions(),
-                ),
-                Text(
-                  'Topics to Explore',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                const SizedBox(height: 8),
-                topicsProvider.quizzes.isEmpty
-                    ? const Center(child: CircularProgressIndicator())
-                    : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: topicsProvider.quizzes.length,
-                        itemBuilder: (context, index) {
-                          final topic = topicsProvider.quizzes[index];
-                          return Card(
-                            margin: const EdgeInsets.only(bottom: 8),
-                            child: ListTile(
-                              title: Text(topic.title),
-                              subtitle: Text(
-                                topic.description,
-                                maxLines: 2,
-                                overflow: TextOverflow.clip,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-              ],
-            ),
           ),
         ),
+        body: _pages[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white,
           selectedItemColor: Colors.deepPurple,
           unselectedItemColor: Colors.purple,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
-                ),
-                label: 'Home'),
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.help,
-                ),
-                label: 'Help'),
+              icon: Icon(Icons.insights),
+              label: 'Insights', // Added Insights tab
+            ),
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.lightbulb,
-                ),
-                label: 'Ideas'),
+              icon: Icon(Icons.lightbulb),
+              label: 'Ideas',
+            ),
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.settings,
-                ),
-                label: 'Settings'),
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HomeContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final trendingTopicProvider = Provider.of<TrendingTopicProvider>(context);
+    final topicsProvider = Provider.of<TopicsProvider>(context);
+    final subjectsProvider = Provider.of<SubjectsProvider>(context);
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Quizzes: Topics',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            const SizedBox(height: 10),
+            const SizedBox(
+              height: 200,
+              child: QuizListHorizontalView(
+                quizType: 'Topics',
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Quizzes: Subjects',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            const SizedBox(height: 10),
+            const SizedBox(
+              height: 200,
+              child: QuizListHorizontalView(
+                quizType: 'Subject',
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Featured Quizzes',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            const SizedBox(height: 10),
+            const SizedBox(
+              height: 200,
+              child: QuizListHorizontalView(
+                quizType: 'TrendingTopic',
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Learning Paths',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 270,
+              child: LearningPathSuggestions(),
+            ),
+            Text(
+              'Topics to Explore',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            const SizedBox(height: 8),
+            topicsProvider.quizzes.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: topicsProvider.quizzes.length,
+                    itemBuilder: (context, index) {
+                      final topic = topicsProvider.quizzes[index];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          title: Text(topic.title),
+                          subtitle: Text(
+                            topic.description,
+                            maxLines: 2,
+                            overflow: TextOverflow.clip,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
           ],
         ),
       ),

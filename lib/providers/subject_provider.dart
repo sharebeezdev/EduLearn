@@ -13,8 +13,8 @@ class SubjectsProvider with ChangeNotifier {
     final List<Map<String, dynamic>> maps = await db.query(
       'QuizOverviews',
       where: 'quizType = ? AND status = ?',
-      whereArgs: ['Subject', 'Not Attempted'],
-      orderBy: 'creationDate',
+      whereArgs: ['Subjects', 'Not Attempted'],
+      orderBy: 'quizId ASC, creationDate ASC',
       limit: 5,
     );
     _quizzes = List.generate(maps.length, (i) {

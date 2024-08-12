@@ -46,17 +46,47 @@ class DBUtilsSQL {
     return result.isNotEmpty && result.first['value'] == 'true';
   }
 
+  Future<void> testExecuteSimpleSQL() async {
+    final db = await database;
+    try {
+      await db.transaction((txn) async {
+        await txn.execute(
+            'CREATE TABLE IF NOT EXISTS test_table (id INTEGER PRIMARY KEY, name TEXT)');
+        await txn.execute('INSERT INTO test_table (name) VALUES ("test_name")');
+        List<Map<String, dynamic>> results =
+            await txn.rawQuery('SELECT * FROM test_table');
+        print('Test Query Results: $results');
+      });
+    } catch (e) {
+      print('Error during simple SQL execution: $e');
+    }
+  }
+
   Future<void> executeScript(String script) async {
     final db = await database;
-    List<String> statements = script.split(';');
-    for (String statement in statements) {
-      if (statement.trim().isNotEmpty) {
-        print('Executing SQL: $statement'); // Add this line to debug
-        await db.execute(statement);
-      }
+    try {
+      await testExecuteSimpleSQL();
+      await db.transaction((txn) async {
+        List<String> statements = script.split(';');
+        for (String statement in statements) {
+          if (statement.trim().isNotEmpty) {
+            print('Executing SQL: $statement'); // Debug: Log each SQL statement
+            try {
+              await txn.execute(statement);
+            } catch (e) {
+              print('Error executing SQL statement: $statement');
+              print('Error: $e');
+              rethrow;
+            }
+          }
+        }
+      });
+      // Mark the data as loaded
+      await db.insert('metadata', {'key': 'data_loaded', 'value': 'true'},
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    } catch (e) {
+      print('Error executing script: $e');
+      rethrow;
     }
-    // Mark the data as loaded
-    await db.insert('metadata', {'key': 'data_loaded', 'value': 'true'},
-        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 }
